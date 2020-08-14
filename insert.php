@@ -12,7 +12,7 @@ require_once "pdo.php";
 
 $name = $_POST['name'];
 $content = $_POST['content'];
-$id = $_POST['id'];
+$content = '';
 
 try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -25,7 +25,7 @@ try {
     echo "<h3> 留言成功 </h3>";
 } catch (PDOException $e) {
     //echo $sql . "<br>" . $e->getMessage();
-    echo "<h3> 留言失敗,ID重複 </h3>";
+    echo "<h3> 留言失敗 </h3>";
 }
 
 $conn = null;
