@@ -5,9 +5,14 @@
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         </head>
         <form method="post" action="insert.php">
-            留言板-v4
+            留言板-v5
             <p></p>
             <hr />
+	    <br />
+            ID :<br />
+	    <input type="text" name="id" onkeyup="changeInfo()" maxlength="20"><span id="info">最多20字</span>
+	    <!-- <input type="text" name="id" />-->
+            <p>
             <br />
             暱稱:<br />
             <input type="text" name="name" />
