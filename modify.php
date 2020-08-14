@@ -1,12 +1,12 @@
 <?php
 require_once "pdo.php";
 
-$mod_name = $_POST['mod_name'];
+$mod_id = $_POST['mod_id'];
 $mod_content = $_POST['mod_content'];
 
-$query  = "UPDATE msg SET `descr` = ? WHERE `name` = ?";
+$query  = "UPDATE msg SET `descr` = ? WHERE `id` = ?";
 $tis = $conn->prepare($query);
 $tis->bindParam(1,$mod_content);
-$tis->bindParam(2,$mod_name);
+$tis->bindParam(2,$mod_id);
 $tis->execute();
 require_once "list.php";
