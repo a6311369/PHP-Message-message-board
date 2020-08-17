@@ -7,20 +7,35 @@
 
 <?php
 require_once  "pdo.php";
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-#$tis = $conn->query('SELECT * FROM msg');
-$tis = $conn->query('SELECT * FROM msg');
+$query = "SELECT * FROM msg";
+$tis = $conn->prepare($query);
+$tis->execute();
 
 echo "<h2>留言內容 </h2>";
 echo "<p>";
 while ($row = $tis->fetch()) {
-        echo '<form method="post" action="reply.php">';
-	echo "留言者: " . $row['name'] ." 留言ID : " . $row['id'] . "<br>" .  "留言 : " . $row['descr'] . "<br>" .
-	'<input type="hidden" name="reply_id" value="' . $row['id'] .'">' .
+    echo '<div>';
+    echo '<form method="post" action="reply.php">';
+    echo "留言者: " . $row['name'] ." 留言ID : " . $row['id'] . "<br>" .  "留言 : " . $row['descr'] . "<br>" .
+        '<input type="hidden" name="reply_id" value="' . $row['id'] .'">' .
         '<input type="text" name="reply_message">' .
-        '<input type="submit" name="send" value="回覆">' .	
-        "<hr>";
-        echo '</form>';
+        '<input type="submit" name="send" value="回覆">' .
+        '<p>';
+    $id2 = $row['id'];
+    $query2 = "SELECT message FROM reply WHERE `id` = ?";
+    $tis2 = $conn->prepare($query2);
+    $tis2->bindParam(1, $id2);
+    $tis2->execute();
+    while ($row2 = $tis2->fetch()) {
+        echo '<div><br>';
+        echo "留言回覆 : " . $row2['message'] . '<br>' ;
+	echo '</div>';
+    }
+    echo '</form>';
+    echo '</div><hr><br>';
 }
 
 ?>
