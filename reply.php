@@ -6,7 +6,7 @@ $reply_message = $_POST['reply_message'];
 
 try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $query = "INSERT INTO reply(id, message) values(?, ?)";
+    $query = "INSERT INTO reply(msg_id, message) values(?, ?)";
     $tis = $conn->prepare($query);
     $tis->bindParam(1, $reply_id);
     $tis->bindParam(2, $reply_message);

@@ -24,16 +24,18 @@ while ($row = $tis->fetch()) {
         '<input type="text" name="reply_message">' .
         '<input type="submit" name="send" value="回覆">' .
         '<p>';
-    $id2 = $row['id'];
-    $query2 = "SELECT message FROM reply WHERE `id` = ?";
+    $msg_id = $row['id'];
+    #$query2 = "SELECT message FROM reply WHERE `msg_id` = ?";
+    $query2 = "SELECT message, id FROM reply WHERE `msg_id` = ?";
     $tis2 = $conn->prepare($query2);
-    $tis2->bindParam(1, $id2);
+    $tis2->bindParam(1, $msg_id);
     $tis2->execute();
     while ($row2 = $tis2->fetch()) {
         echo '<form method="post" action="del-replat.php">';
         echo '<div>';
-	echo "留言回覆 : " . $row2['message'] . '&nbsp;' .
+	echo '回覆ID : ' . $row2['id'] . '<br>' . '留言回覆 : ' . $row2['message'] . '&emsp;' .
 	    '<input type="hidden" name="del_re_message" value="' . $row2['message'] . '">' .
+	    '<input type="hidden" name="del_re_id" value="' . $row2['id'] . '">' .
 	    '<input type="submit" name="send" value="刪除回覆">';
 	echo '</form>';
 	echo '</div>';
