@@ -19,7 +19,7 @@ echo "<p>";
 while ($row = $tis->fetch()) {
     echo '<div>';
     echo '<form method="post" action="reply.php">';
-    echo "留言者: " . $row['name'] ." 留言ID : " . $row['id'] . "<br>" .  "留言 : " . $row['descr'] . "<br>" .
+    echo '留言者: ' . $row['name'] .' 留言ID : ' . $row['id'] . "<br>" .  "留言 : " . $row['descr'] . "<br>" .
         '<input type="hidden" name="reply_id" value="' . $row['id'] .'">' .
         '<input type="text" name="reply_message">' .
         '<input type="submit" name="send" value="回覆">' .
@@ -30,8 +30,12 @@ while ($row = $tis->fetch()) {
     $tis2->bindParam(1, $id2);
     $tis2->execute();
     while ($row2 = $tis2->fetch()) {
-        echo '<div><br>';
-        echo "留言回覆 : " . $row2['message'] . '<br>' ;
+        echo '<form method="post" action="del-replat.php">';
+        echo '<div>';
+	echo "留言回覆 : " . $row2['message'] . '&nbsp;' .
+	    '<input type="hidden" name="del_re_message" value="' . $row2['message'] . '">' .
+	    '<input type="submit" name="send" value="刪除回覆">';
+	echo '</form>';
 	echo '</div>';
     }
     echo '</form>';
