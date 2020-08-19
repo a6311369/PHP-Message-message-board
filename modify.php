@@ -1,8 +1,8 @@
 <?php
 require_once "pdo.php";
 
-$mod_id = $_POST['mod_id'];
-$mod_content = $_POST['mod_content'];
+$mod_id = trim($_POST['mod_id']);
+$mod_content = trim($_POST['mod_content']);
 
 $query = "UPDATE msg SET `descr` = ? WHERE `id` = ?";
 $tis = $conn->prepare($query);

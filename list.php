@@ -7,8 +7,6 @@
 
 <?php
 require_once  "pdo.php";
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 $query = "SELECT * FROM msg";
 $tis = $conn->prepare($query);
@@ -26,7 +24,6 @@ while ($row = $tis->fetch()) {
         '<p>';
     echo '</form>';
     $msg_id = $row['id'];
-    #$query2 = "SELECT message FROM reply WHERE `msg_id` = ?";
     $query2 = "SELECT message, id FROM reply WHERE `msg_id` = ?";
     $tis2 = $conn->prepare($query2);
     $tis2->bindParam(1, $msg_id);
@@ -44,7 +41,7 @@ while ($row = $tis->fetch()) {
 }
 
 ?>
-   <form method = "post" action = "modify.php">
+   <form method = "post" action = "modify.php" name="chk_mod" onsubmit="return check_mod()">
       <h2>修改留言</h2><p>
       要修改留言的ID:<br>
       <input type = "text" name = "mod_id"><p>
@@ -54,10 +51,27 @@ while ($row = $tis->fetch()) {
    </form>
    <input type="button" name="Submit" value="返回留言版" class="btn" onclick="location.href='index.html'" />
    <input type="button" name="Submit" value="查詢留言" class="btn" onclick="location.href='list.php'" /><p>
-    <!--刪除留言-->
-   <form action="del.php" method="post"> 要刪除留言的ID :  <input type="text" name="del_id" />
-　    <input type="submit" value="刪除留言"/><p>
+   <form action="del.php" method="post" name="chk_del" onsubmit="return check_del()"> 
+       要刪除留言的ID :  
+       <input type="text" name="del_id" />
+　     <input type="submit" value="刪除留言"/><p>
    </form>
    <p>
 </body>
+<script type="text/javascript">
+    function check_mod(){
+        if(chk_mod.mod_id.value == "") {
+            alert("未輸入修改ID");
+            return false;
+        }else
+            chk_mod.submit();
+        }
+    function check_del(){
+        if(chk_del.del_id.value == "") {
+            alert("未輸入刪除ID");
+            return false;
+        }else
+            chk_del.submit();
+        }
+</script>
 </html>

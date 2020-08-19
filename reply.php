@@ -1,8 +1,8 @@
 <?php
 require_once "pdo.php";
 
-$reply_id = $_POST['reply_id'];
-$reply_message = $_POST['reply_message'];
+$reply_id = trim($_POST['reply_id']);
+$reply_message = trim($_POST['reply_message']);
 
 try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

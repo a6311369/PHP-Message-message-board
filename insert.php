@@ -10,8 +10,8 @@
 <?php
 require_once "pdo.php";
 
-$name = $_POST['name'];
-$content = $_POST['content'];
+$name =  trim($_POST['name']);
+$content = trim($_POST['content']);
 
 try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

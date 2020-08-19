@@ -1,8 +1,8 @@
 <?php
 require_once "pdo.php";
 
-$del_re_message = $_POST['del_re_message'];
-$del_re_id = $_POST['del_re_id'];
+$del_re_message = trim($_POST['del_re_message']);
+$del_re_id = trim($_POST['del_re_id']);
 $query = "DELETE FROM  reply WHERE `message` = ? AND `id` = ?";
 $tis = $conn->prepare($query);
 $tis->bindParam(1, $del_re_message);
