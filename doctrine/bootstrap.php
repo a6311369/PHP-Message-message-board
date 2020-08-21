@@ -1,0 +1,22 @@
+<?php
+require_once "vendor/autoload.php";
+
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+
+$paths = array("/opt/tuffy_lin/doctrine/src");
+$isDevMode = false;
+$proxyDir = null;
+$cache = null;
+$useSimpleAnnotationReader = false;
+
+$dbParams = array(
+    'driver'   => 'pdo_mysql',
+    'user'     => 'root',
+    'password' => '!Q2w3e4R',
+    'dbname'   => 'board',
+    'dbhost'   => '127.0.0.1',
+);
+
+$config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, $proxyDir, $cache, $useSimpleAnnotationReader);
+$entityManager = EntityManager::create($dbParams, $config);
