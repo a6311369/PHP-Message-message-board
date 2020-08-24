@@ -4,7 +4,7 @@ require_once "vendor/autoload.php";
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
-$paths = array(__DIR__."/src");
+$paths = array(__DIR__ . "/src");
 $isDevMode = false;
 $proxyDir = null;
 $cache = null;

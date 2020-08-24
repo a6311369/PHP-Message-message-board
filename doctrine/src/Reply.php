@@ -17,7 +17,7 @@ class Reply
     /**
      * @ORM\Column(type="integer")
      */
-    protected $msg_id;
+    protected $msgId;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -29,25 +29,25 @@ class Reply
         return $this->id;
     }
 
-    public function getMsg_id()
+    public function getMsgId()
     {
-        return $this->name;
+        return $this->msgId;
     }
 
-    public function setMsg_id($Msg_id)
+    public function setMsgId($msgId)
     {
-        $this->name = $name;
+        $this->msgId = $msgId;
     }
 
 
-    public function getmessage()
+    public function getMessage()
     {
-        return $this->descr;
+        return $this->message;
     }
 
-    public function setmessage($message)
+    public function setMessage($message)
     {
-        $this->descr = $descr;
+        $this->message = $message;
     }
 
 }

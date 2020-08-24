@@ -2,8 +2,8 @@
 // create_msg.php <name>
 require_once "bootstrap.php";
 
-$newName = $argv[1];
-$newDescr = $argv[2];
+$newName = trim($_POST['name']);
+$newDescr = trim($_POST['content']);
 
 $msg = new Msg();
 $msg->setName($newName);
@@ -11,5 +11,6 @@ $msg->setDescr($newDescr);
 
 $entityManager->persist($msg);
 $entityManager->flush();
-
-echo "Created Product with ID " . $msg->getId() . "\n";
+echo "<h3> 留言成功 </h3>";
+require_once "index.html";
+// echo "Created Product with ID " . $msg->getId() . "\n";
