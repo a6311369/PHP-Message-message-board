@@ -9,5 +9,4 @@ if ($msg === null) {
     echo "No msg found.\n";
     exit(1);
 }
-
 echo sprintf("-%s\n", $msg->getName());

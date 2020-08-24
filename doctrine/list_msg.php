@@ -10,6 +10,3 @@ foreach ($msg as $msg) {
     echo sprintf("-%s\n", $msg->getName());
     echo sprintf("-%s\n", $msg->getDescr());
 }
-
-
-require_once "index.html";
