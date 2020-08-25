@@ -2,8 +2,19 @@
 // remove_msg.php
 require_once "bootstrap.php";
 
-$id = $argv[1];
+$id = trim($_POST['del_id']);
+$msgId = trim($_POST['del_id']);
+
 $msg = $entityManager->find('Msg', $id);
-// var_dump(7, $msg);
 $entityManager->remove($msg);
 $entityManager->flush();
+
+$replyRepository = $entityManager->getRepository('Reply');
+$reply = $replyRepository->findBy(array('msgId' => $msgId));
+
+foreach ($reply as $reply) {
+    $entityManager->remove($reply);
+}
+$entityManager->flush();
+
+require_once "list_msg.php";

@@ -1,9 +1,9 @@
 <?php
-// create_msg.php <name>
+// create_reply.php <name>
 require_once "bootstrap.php";
 
-$newMsgId = $argv[1];
-$newMessage = $argv[2];
+$newMsgId = trim($_POST['reply_id']);
+$newMessage = trim($_POST['reply_message']);
 
 $reply = new Reply();
 $reply->setMsgId($newMsgId);
@@ -11,5 +11,6 @@ $reply->setMessage($newMessage);
 
 $entityManager->persist($reply);
 $entityManager->flush();
+require_once "list_msg.php";
 
-echo "Created Product with ID " . $reply->getId() . "\n";
+// echo "Created Product with ID " . $reply->getId() . "\n";

@@ -13,24 +13,34 @@
     // list_msg.php
     require_once "bootstrap.php";
 
+
     $msgRepository = $entityManager->getRepository('Msg');
     $msg = $msgRepository->findAll();
 
     foreach ($msg as $msg) {
-        echo '<div>';
-        echo '<form method="post" action="reply.php">';
+        echo '<form method="post" action="creat_reply.php">';
         echo '留言者: ' . $msg->getName() . ' 留言ID : ' . $msg->getID() . "<br>" .  "留言 : " . $msg->getDescr() . "<br>" .
             '<input type="hidden" name="reply_id" value="' . $msg->getID() . '">' .
             '<input type="text" name="reply_message">' .
             '<input type="submit" name="send" value="回覆">' .
             '<p>';
         echo '</form>';
+
+        $replyId = $msg->getID();
+        // echo $replyId;
+
+        $replyRepository = $entityManager->getRepository('Reply');
+        $reply = $replyRepository->findBy(array('msgId' => $replyId));
+
+        foreach ($reply as $reply) {
+            echo '<form method="post" action="remove_reply.php">';
+            echo '留言回覆 : ' . $reply->getMessage() . '&emsp;' .
+                '<input type="hidden" name="del_re_message" value="' . $reply->getMessage() . '">' .
+                '<input type="hidden" name="del_re_id" value="' . $reply->getMsgId() . '">' .
+                '<input type="submit" name="send" value="刪除回覆">';
+            echo '</form>';
+        }
         echo '<hr><br>';
-        
-        // echo $msg->getID() . '<br>';
-        // echo sprintf("-%s\n", $msg->getID());
-        // echo sprintf("-%s\n", $msg->getName());
-        // echo sprintf("-%s\n", $msg->getDescr());
     }
     ?>
 
