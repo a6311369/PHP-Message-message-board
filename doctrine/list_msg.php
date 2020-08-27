@@ -27,7 +27,7 @@
 
         $replyId = $msg->getID();
         $replyRepository = $entityManager->getRepository('Reply');
-        $reply = $replyRepository->findBy(array('msgid' => $replyId));
+        $reply = $replyRepository->findBy(array('msg' => $replyId));
 
         foreach ($reply as $reply) {
             echo '<form method="post" action="remove_reply.php">';

@@ -17,10 +17,9 @@ class Reply
     protected $id;
     /**
      * @ORM\ManyToOne(targetEntity="Msg", inversedBy="replies", cascade={"persist"})
-     * @ORM\JoinColumn(name="msgid_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="msg_id", referencedColumnName="id")
      */
-    private $msgid;
-
+    private $msg;
     /**
      * @ORM\Column(type="string", length=100)
      */
@@ -31,14 +30,14 @@ class Reply
         return $this->id;
     }
 
-    public function getMsgid()
+    public function getMsg()
     {
-        return $this->msgid;
+        return $this->msg;
     }
 
-    public function setMsgid($msgid)
+    public function setMsg($msg)
     {
-        $this->msgid = $msgid;
+        $this->msg = $msg;
     }
 
 

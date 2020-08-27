@@ -5,7 +5,7 @@ $newMsgid = trim($_POST['reply_id']);
 $newMessage = trim($_POST['reply_message']);
 
 $reply = new Reply();
-$reply->setMsgid($newMsgid);
+$reply->setMsg($newMsgid);
 $reply->setMessage($newMessage);
 
 $entityManager->persist($reply);
