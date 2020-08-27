@@ -10,12 +10,11 @@
 
 
     <?php
-    // list_msg.php
     require_once "bootstrap.php";
-
 
     $msgRepository = $entityManager->getRepository('Msg');
     $msg = $msgRepository->findAll();
+
 
     foreach ($msg as $msg) {
         echo '<form method="post" action="creat_reply.php">';
@@ -27,21 +26,20 @@
         echo '</form>';
 
         $replyId = $msg->getID();
-        // echo $replyId;
-
         $replyRepository = $entityManager->getRepository('Reply');
-        $reply = $replyRepository->findBy(array('msgId' => $replyId));
+        $reply = $replyRepository->findBy(array('msgid' => $replyId));
 
         foreach ($reply as $reply) {
             echo '<form method="post" action="remove_reply.php">';
             echo '留言回覆 : ' . $reply->getMessage() . '&emsp;' .
                 '<input type="hidden" name="del_re_message" value="' . $reply->getMessage() . '">' .
-                '<input type="hidden" name="del_re_id" value="' . $reply->getMsgId() . '">' .
+                '<input type="hidden" name="del_re_id" value="' . $reply->getId() . '">' .
                 '<input type="submit" name="send" value="刪除回覆">';
             echo '</form>';
         }
         echo '<hr><br>';
     }
+
     ?>
 
     <form method="post" action="update_msg.php" name="chk_mod" onsubmit="return check_mod()">

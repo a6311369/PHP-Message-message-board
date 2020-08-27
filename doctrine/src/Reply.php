@@ -1,6 +1,7 @@
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity
@@ -15,9 +16,10 @@ class Reply
      */
     protected $id;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Msg", inversedBy="replies", cascade={"persist"})
+     * @ORM\JoinColumn(name="msgid_id", referencedColumnName="id")
      */
-    protected $msgId;
+    private $msgid;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -29,14 +31,14 @@ class Reply
         return $this->id;
     }
 
-    public function getMsgId()
+    public function getMsgid()
     {
-        return $this->msgId;
+        return $this->msgid;
     }
 
-    public function setMsgId($msgId)
+    public function setMsgid($msgid)
     {
-        $this->msgId = $msgId;
+        $this->msgid = $msgid;
     }
 
 
@@ -49,6 +51,4 @@ class Reply
     {
         $this->message = $message;
     }
-
 }
-

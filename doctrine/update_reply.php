@@ -1,5 +1,4 @@
 <?php
-// update_msg.php <id> <new-descr>
 require_once "bootstrap.php";
 
 $id = $argv[1];
@@ -13,5 +12,4 @@ if ($reply === null) {
 }
 
 $reply->setMsgId($msdId);
-
 $entityManager->flush();

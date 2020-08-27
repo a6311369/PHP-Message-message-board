@@ -13,4 +13,3 @@ $entityManager->persist($msg);
 $entityManager->flush();
 echo "<h3> 留言成功 </h3>";
 require_once "index.html";
-// echo "Created Product with ID " . $msg->getId() . "\n";

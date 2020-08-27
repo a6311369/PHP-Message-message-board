@@ -1,6 +1,7 @@
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -14,6 +15,17 @@ class Msg
      * @ORM\GeneratedValue
      */
     protected $id;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Reply", mappedBy="msg", orphanRemoval=true, cascade={"persist", "remove", "merge"})
+     */
+    private $replies;
+
+    public function __construct()
+    {
+        $this->replies = new ArrayCollection();
+    }
+
     /**
      * @ORM\Column(type="string", length=100)
      */
@@ -49,6 +61,10 @@ class Msg
     {
         $this->descr = $descr;
     }
-
+    
+    
+    public function getReplies()
+    {
+        return $this->replies;
+    }
 }
-
