@@ -21,11 +21,6 @@ class Msg
      */
     private $replies;
 
-    public function __construct()
-    {
-        $this->replies = new ArrayCollection();
-    }
-
     /**
      * @ORM\Column(type="string", length=100)
      */
@@ -35,6 +30,8 @@ class Msg
      * @ORM\Column(type="string", length=100)
      */
     protected $descr;
+
+
 
     public function getId()
     {
@@ -61,10 +58,19 @@ class Msg
     {
         $this->descr = $descr;
     }
-    
-    
+
     public function getReplies()
     {
         return $this->replies;
+    }
+
+    public function __construct()
+    {
+        $this->replies = new ArrayCollection();
+    }
+
+    public function setReplies(Msg $replies)
+    {
+        $this->replies[] = $replies;
     }
 }

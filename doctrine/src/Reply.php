@@ -1,7 +1,6 @@
 <?php
 
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity
