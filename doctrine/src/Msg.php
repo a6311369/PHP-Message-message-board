@@ -59,11 +59,6 @@ class Msg
         $this->descr = $descr;
     }
 
-    public function getReplies()
-    {
-        return $this->replies;
-    }
-
     public function __construct()
     {
         $this->replies = new ArrayCollection();
@@ -72,5 +67,9 @@ class Msg
     public function setReplies(Msg $replies)
     {
         $this->replies[] = $replies;
+    }
+
+    public function getReplies() {
+        return $this->replies;
     }
 }

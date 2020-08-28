@@ -1,14 +1,15 @@
 <?php
 require_once "bootstrap.php";
 
-$newMsgid = trim($_POST['reply_id']);
+$newMsg = trim($_POST['reply_id']);
 $newMessage = trim($_POST['reply_message']);
+$msg = $entityManager->find('Msg', $newMsg);
 
-$reply = new Reply();
-$reply->setMsg($newMsgid);
-$reply->setMessage($newMessage);
+$newReply = new Reply();
+$newReply->setMsg($msg);
+$newReply->setMessage($newMessage);
 
-$entityManager->persist($reply);
+$entityManager->persist($newReply);
 $entityManager->flush();
 
 require_once "list_msg.php";
