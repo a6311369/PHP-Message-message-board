@@ -3,6 +3,7 @@ require_once "bootstrap.php";
 
 $newMsg = trim($_POST['reply_id']);
 $newMessage = trim($_POST['reply_message']);
+
 $msg = $entityManager->find('Msg', $newMsg);
 
 $newReply = new Reply();
