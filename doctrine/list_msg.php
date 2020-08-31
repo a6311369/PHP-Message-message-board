@@ -15,14 +15,6 @@
     $msgRepository = $entityManager->getRepository('Msg');
     $msg = $msgRepository->findAll();
 
-    echo '<p><hr><p>';
-    $qb->select($qb->expr()->count('id'))
-        ->from('Msg','id');
-    $query = $qb->getQuery();
-    $msgCount = $query->getSingleScalarResult();
-    echo "目前留言總筆數有 : " . $msgCount . "筆";
-    echo '<p><hr><p>';
-
 
     foreach ($msg as $msg) {
         echo '<form method="post" action="creat_reply.php">';
@@ -44,9 +36,15 @@
                 '<input type="submit" name="send" value="刪除回覆">';
             echo '</form>';
         }
-        echo '<hr><br>';
+        echo '<hr>';
     }
 
+    $qb->select($qb->expr()->count('id'))
+        ->from('Msg', 'id');
+    $query = $qb->getQuery();
+    $msgCount = $query->getSingleScalarResult();
+    echo '目前留言總筆數有 : <font color="red">'. $msgCount . '</font> 筆';
+    echo '<br><hr><p>';
 
 
 
