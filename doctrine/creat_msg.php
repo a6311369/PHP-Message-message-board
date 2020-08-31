@@ -11,4 +11,5 @@ $msg->setDescr($newDescr);
 $entityManager->persist($msg);
 $entityManager->flush();
 echo "<h3> 留言成功 </h3>";
+
 require_once "index.html";
