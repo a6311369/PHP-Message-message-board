@@ -32,7 +32,7 @@
         foreach ($reply as $reply) {
             echo '<form method="post" action="remove_reply.php">';
             echo '留言回覆 : ' . $reply->getMessage() . '&emsp;' .
-                '<input type="hidden" name="del_re_message" value="' . $reply->getMessage() . '">' .
+                // '<input type="hidden" name="del_re_message" value="' . $reply->getMessage() . '">' .
                 '<input type="hidden" name="del_re_id" value="' . $reply->getId() . '">' .
                 '<input type="submit" name="send" value="刪除回覆">';
             echo '</form>';

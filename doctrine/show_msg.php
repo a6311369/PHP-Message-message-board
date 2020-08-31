@@ -1,5 +1,5 @@
 <?php
-// show_msg.php <id>
+// test use
 require_once "bootstrap.php";
 
 $id = $argv[1];

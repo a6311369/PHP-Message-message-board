@@ -1,5 +1,4 @@
 <?php
-// create_msg.php <name>
 require_once "bootstrap.php";
 
 $newName = trim($_POST['name']);

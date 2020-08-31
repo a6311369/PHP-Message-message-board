@@ -1,4 +1,5 @@
 <?php
+//test use
 require_once "bootstrap.php";
 
 $id = $argv[1];

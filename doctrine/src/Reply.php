@@ -34,7 +34,8 @@ class Reply
         return $this->msg;
     }
 
-    public function setMsg(Msg $msg = null) {
+    public function setMsg(Msg $msg = null)
+    {
         $this->msg = $msg;
     }
 

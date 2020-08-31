@@ -19,4 +19,5 @@ $dbParams = array(
 );
 
 $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, $proxyDir, $cache, $useSimpleAnnotationReader);
+$config->setAutoGenerateProxyClasses(TRUE);
 $entityManager = EntityManager::create($dbParams, $config);
