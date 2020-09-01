@@ -39,15 +39,17 @@
         echo '<hr>';
     }
 
-    $qb->select($qb->expr()->count('id'))
-        ->from('Msg', 'id');
-    $query = $qb->getQuery();
-    $msgCount = $query->getSingleScalarResult();
-    echo '目前留言總筆數有 : <font color="red">'. $msgCount . '</font> 筆';
-    echo '<br><hr><br>';
+    echo '<p>';
 
+    $msgCount = $entityManager->getRepository(Msg::class)->count([]);
 
+    // $qb->select($qb->expr()->count('id'))
+    //     ->from('Msg', 'id');
+    // $query = $qb->getQuery();
+    // $msgCount = $query->getSingleScalarResult();
 
+    echo '目前留言總筆數有 : <font color="red">' . $msgCount . '</font> 筆';
+    echo '<p><hr><p>';
 
     ?>
 

@@ -32,7 +32,6 @@ class Msg
     protected $descr;
 
 
-
     public function getId()
     {
         return $this->id;
@@ -69,7 +68,8 @@ class Msg
         $this->replies[] = $replies;
     }
 
-    public function getReplies() {
+    public function getReplies()
+    {
         return $this->replies;
     }
 }
