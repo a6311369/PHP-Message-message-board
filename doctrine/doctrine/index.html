@@ -1,0 +1,37 @@
+<html>
+
+<body>
+
+    <head>
+        <title>留言版</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    </head>
+    <form method="post" action="creat_msg.php" name="chk" onsubmit="return check()">
+        留言板-v5 (Doctrine Ver)
+        <p></p>
+        <hr />
+        <br />
+        暱稱:<br />
+        <input type="text" name="name" ) />
+        <p>
+            留言:<br />
+            <textarea rows="10" cols="20" name="content"> </textarea>
+        </p>
+        <p>
+            <input type="submit" value="送出留言" />
+            <input type="reset" value="清空留言" />
+            <input type="button" name="Submit" value="查詢留言" class="btn" onclick="location.href='list_msg.php'" />
+        </p>
+    </form>
+</body>
+<script type="text/javascript">
+    function check() {
+        if (chk.name.value == "") {
+            alert("未輸入暱稱");
+            return false;
+        } else
+            chk.submit();
+    }
+</script>
+
+</html>
