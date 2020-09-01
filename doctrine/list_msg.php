@@ -44,7 +44,7 @@
     $query = $qb->getQuery();
     $msgCount = $query->getSingleScalarResult();
     echo '目前留言總筆數有 : <font color="red">'. $msgCount . '</font> 筆';
-    echo '<br><hr><p>';
+    echo '<br><hr><br>';
 
 
 
