@@ -7,41 +7,6 @@
 </head>
 
 <body>
-    <?php
-    require_once "bootstrap.php";
-
-    $msgRepository = $entityManager->getRepository('Msg');
-    $msg = $msgRepository->findAll();
-
-    foreach ($msg as $msg) {
-        echo '<form method="post" action="creat_reply.php">';
-        echo '留言者: ' . $msg->getName() . ' 留言ID : ' . $msg->getID() . "<br>" .  "留言 : " . $msg->getDescr() . "<br>" .
-            '<input type="hidden" name="reply_id" value="' . $msg->getID() . '">' .
-            '<input type="text" name="reply_message">' .
-            '<input type="submit" name="send" value="回覆">' .
-            '<p>';
-        echo '</form>';
-
-        $replyId = $msg->getID();
-        $replyRepository = $entityManager->getRepository('Reply');
-        $reply = $replyRepository->findBy(array('msg' => $replyId));
-
-        foreach ($reply as $reply) {
-            echo '<form method="post" action="remove_reply.php">';
-            echo '留言回覆 : ' . $reply->getMessage() . '&emsp;' .
-                '<input type="hidden" name="del_re_id" value="' . $reply->getId() . '">' .
-                '<input type="submit" name="send" value="刪除回覆">';
-            echo '</form>';
-        }
-        echo '<hr>';
-    }
-
-    $msgCount = $entityManager->getRepository('Msg')->count([]);
-    echo '目前留言總筆數有 : <font color="red">' . $msgCount . '</font> 筆';
-    echo '<br><hr><p>';
-
-    ?>
-
     <form method="post" action="update_msg.php" name="chk_mod" onsubmit="return check_mod()">
         <h2>修改留言</h2>
         <p>
@@ -71,6 +36,41 @@
                 　 <input type="submit" value="批次刪除留言" />
                 <p>
             </form>
+
+
+            <?php
+            require_once "bootstrap.php";
+
+            $msgCount = $entityManager->getRepository('Msg')->count([]);
+            echo '目前留言總筆數有 : <font color="red">' . $msgCount . '</font> 筆';
+            echo '<br><hr><p>';
+
+            $msgRepository = $entityManager->getRepository('Msg');
+            $msg = $msgRepository->findAll();
+
+            foreach ($msg as $msg) {
+                echo '<form method="post" action="creat_reply.php">';
+                echo '留言者: ' . $msg->getName() . ' 留言ID : ' . $msg->getID() . "<br>" .  "留言 : " . $msg->getDescr() . "<br>" .
+                    '<input type="hidden" name="reply_id" value="' . $msg->getID() . '">' .
+                    '<input type="text" name="reply_message">' .
+                    '<input type="submit" name="send" value="回覆">' .
+                    '<p>';
+                echo '</form>';
+
+                $replyId = $msg->getID();
+                $replyRepository = $entityManager->getRepository('Reply');
+                $reply = $replyRepository->findBy(array('msg' => $replyId));
+
+                foreach ($reply as $reply) {
+                    echo '<form method="post" action="remove_reply.php">';
+                    echo '留言回覆 : ' . $reply->getMessage() . '&emsp;' .
+                        '<input type="hidden" name="del_re_id" value="' . $reply->getId() . '">' .
+                        '<input type="submit" name="send" value="刪除回覆">';
+                    echo '</form>';
+                }
+                echo '<hr>';
+            }
+            ?>
 </body>
 <script type="text/javascript">
     function check_mod() {

@@ -2,9 +2,10 @@
 require_once "bootstrap.php";
 
 $newName = trim($_POST['bname']);
+$newNumber = trim($_POST['bnumber']);
 $newDescr = trim($_POST['bcontent']);
 
-for ($i = 1; $i <= 5; ++$i) {
+for ($i = 1; $i <= $newNumber; ++$i) {
     $bname = $newName;
     $bdescr = '第' . $i . '次留言 : ' . $newDescr;
     $msg = new Msg();
