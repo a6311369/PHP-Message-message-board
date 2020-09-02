@@ -40,12 +40,6 @@
     }
 
     $msgCount = $entityManager->getRepository('Msg')->count([]);
-
-    // $qb->select($qb->expr()->count('id'))
-    //     ->from('Msg', 'id');
-    // $query = $qb->getQuery();
-    // $msgCount = $query->getSingleScalarResult();
-
     echo '目前留言總筆數有 : <font color="red">' . $msgCount . '</font> 筆';
     echo '<br><hr><p>';
 
