@@ -7,14 +7,11 @@
 </head>
 
 <body>
-
-
     <?php
     require_once "bootstrap.php";
 
     $msgRepository = $entityManager->getRepository('Msg');
     $msg = $msgRepository->findAll();
-
 
     foreach ($msg as $msg) {
         echo '<form method="post" action="creat_reply.php">';

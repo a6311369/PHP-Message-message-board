@@ -15,5 +15,4 @@ for ($i = 1; $i <= 5; ++$i) {
 $entityManager->flush();
 echo "<h3> 批次留言成功 </h3>";
 
-
 require_once "index.html";
