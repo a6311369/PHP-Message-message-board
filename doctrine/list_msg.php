@@ -52,7 +52,7 @@
             <input type="text" name="mod_id">
             <p>
                 要修改的留言:<br>
-                <textarea rows="10" cols="20" name="mod_content"></textarea><br>
+                <textarea rows="1" cols="20" name="mod_content"></textarea><br>
                 <input type="submit" value="修改留言" />
                 <p>
                     <hr>
@@ -67,6 +67,13 @@
             <p>
         </form>
         <p>
+            <hr>
+            <form action="batch_del_msg.php" method="post" name="chk_batch_del" onsubmit="return batch_del()">
+                要刪除批次留言的姓名 :
+                <input type="text" name="batch_del_name" />
+                　 <input type="submit" value="批次刪除留言" />
+                <p>
+            </form>
 </body>
 <script type="text/javascript">
     function check_mod() {
@@ -83,6 +90,14 @@
             return false;
         } else
             chk_del.submit();
+    }
+
+    function batch_del() {
+        if (chk_batch_del.batch_del_name.value == "") {
+            alert("未輸入批次刪除姓名");
+            return false;
+        } else
+            chk_batch_del.submit();
     }
 </script>
 
