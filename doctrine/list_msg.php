@@ -45,8 +45,20 @@
             echo '目前留言總筆數有 : <font color="red">' . $msgCount . '</font> 筆';
             echo '<br><hr><p>';
 
+            // 每頁筆數
+            $per = 5;
+            // 計算頁數
+            $pages = ceil($msgCount / $per);
+            // 獲取當前頁碼
+            if (!isset($_GET["page"])) { //假如$_GET["page"]未設置
+                $page = 1; //則在此設定起始頁數
+            } else {
+                $page = intval($_GET["page"]); //確認頁數只能夠是數值資料
+            }
+            $start = ($page - 1) * $per; //每一頁開始的資料序號
+
             $msgRepository = $entityManager->getRepository('Msg');
-            $msg = $msgRepository->findAll();
+            $msg = $msgRepository->findBy(array(), array(), $per, $start);
 
             foreach ($msg as $msg) {
                 echo '<form method="post" action="creat_reply.php">';
@@ -69,6 +81,11 @@
                     echo '</form>';
                 }
                 echo '<hr>';
+            }
+
+            //顯示分頁
+            for ($i = 1; $i <= $pages; ++$i) {
+                echo '<a href="?page=' . $i . '">' . $i . '</a> ';
             }
             ?>
 </body>
