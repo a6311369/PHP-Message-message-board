@@ -46,7 +46,7 @@
             echo '<br><hr><p>';
 
             // 每頁筆數
-            $per = 5;
+            $per = 2;
             // 計算頁數
             $pages = ceil($msgCount / $per);
             // 獲取當前頁碼
@@ -84,9 +84,57 @@
             }
 
             //顯示分頁
-            for ($i = 1; $i <= $pages; ++$i) {
-                echo '<a href="?page=' . $i . '">' . $i . '</a> ';
+            echo '在 ' . $page . ' 頁-共 ' . $pages . ' 頁<br>';
+            if ($pages > 1) {  //總頁數>1才顯示分頁選單
+
+                //分頁頁碼；在第一頁時,該頁就不超連結,可連結就送出$_GET['page']
+                if ($page == '1') {
+                    echo "首頁 ";
+                    echo "上一頁 ";
+                } else {
+                    echo "<a href=?page=1>首頁 </a> ";
+                    echo "<a href=?page=" . ($page - 1) . ">上一頁 </a> ";
+                }
+
+                //此分頁頁籤以左、右頁數來控制總顯示頁籤數，例如顯示5個分頁數且將當下分頁位於中間，則設2+1+2 即可。若要當下頁位於第1個，則設0+1+4。
+                //也就是總合就是要顯示分頁數。如要顯示10頁，則為 4+1+5 或 0+1+9，以此類推。	
+                for ($i = 1; $i <= $pages; $i++) {
+                    $lnum = 2;  //顯示左分頁數，直接修改就可增減顯示左頁數
+                    $rnum = 2;  //顯示右分頁數，直接修改就可增減顯示右頁數
+
+                    //判斷左(右)頁籤數是否足夠設定的分頁數，不夠就增加右(左)頁數，以保持總顯示分頁數目。
+                    if ($page <= $lnum) {
+                        $rnum = $rnum + ($lnum - $page + 1);
+                    }
+
+                    if ($page + $rnum > $pages) {
+                        $lnum = $lnum + ($rnum - ($pages - $page));
+                    }
+
+                    //分頁部份處於該頁就不超連結,不是就連結送出$_GET['page']
+                    if ($page - $lnum <= $i && $i <= $page + $rnum) {
+                        if ($i == $page) {
+                            echo $i . ' ';
+                        } else {
+                            echo '<a href=?page=' . $i . '>' . $i . '</a> ';
+                        }
+                    }
+                }
+
+
+                //在最後頁時,該頁就不超連結,可連結就送出$_GET['page']	
+                if ($page == $pages) {
+                    echo " 下一頁";
+                    echo " 末頁";
+                } else {
+                    echo "<a href=?page=" . ($page + 1) . "> 下一頁</a>";
+                    echo "<a href=?page=" . $pages . "> 末頁</a>";
+                }
             }
+
+
+
+
             ?>
 </body>
 <script type="text/javascript">
