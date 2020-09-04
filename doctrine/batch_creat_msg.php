@@ -8,13 +8,14 @@ $stime=microtime(true);
 
 for ($i = 1; $i <= $newNumber; ++$i) {
     $bname = $newName;
-    $bdescr = '第' . $i . '次留言 : ' . $newDescr;
+    $bdescr = '第' . $i . '次留言 : ' . $newDescr . $i;
     $msg = new Msg();
     $msg->setName($bname);
     $msg->setDescr($bdescr);
     $entityManager->persist($msg);
 }
 $entityManager->flush();
+
 $etime=microtime(true);
 $total=$etime-$stime;
 
