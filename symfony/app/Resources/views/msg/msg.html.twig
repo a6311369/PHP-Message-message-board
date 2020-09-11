@@ -1,0 +1,55 @@
+{# app/Resources/views/msg/msg.html.twig #}
+{# <h1>Your lucky number is {{ number }}</h1> #}
+<form method="post" action="test" name="chk" onsubmit="return check()">
+
+    一般留言板-v6 (Symfony Ver)<br>
+    暱稱:<br />
+    <input type="text" name="name" ) />
+    <p>
+        留言:<br />
+        <textarea rows="10" cols="20" name="content"> </textarea>
+        <p>
+            <input type="submit" value="送出留言" />
+            <input type="reset" value="清空留言" />
+            <input type="button" name="Submit" value="查詢留言" class="btn" onclick="location.href='test'" />
+</form>
+<hr />
+<form method="post" action="batch_creat_msg.php" name="chk2" onsubmit="return check2()">
+    批次留言 (Doctrine Ver)
+    <br />
+    暱稱:<br />
+    <input type="text" name="bname" ) />
+    <br>
+    要產生幾筆留言:<br />
+    <input type="text" name="bnumber" ) />
+    <p>
+        留言:<br />
+        <textarea rows="10" cols="20" name="bcontent"> </textarea>
+    </p>
+    <p>
+        <input type="submit" value="批次留言" />
+        <input type="reset" value="清空留言" />
+        <input type="button" name="Submit" value="查詢留言" class="btn" onclick="location.href='list_msg.php'" />
+    </p>
+    <hr>
+    <!-- 測試 -->
+    <input type="button" name="Submit" value="批次新增2" class="btn" onclick="location.href='batch_creat_msg2.php'" />
+    <input type="button" name="Submit" value="批次刪除2" class="btn" onclick="location.href='batch_del_msg2.php'" />
+</form>
+<script type="text/javascript">
+    function check() {
+        if (chk.name.value == "") {
+            alert("未輸入暱稱");
+            return false;
+        } else
+            chk.submit();
+    }
+
+    function check2() {
+        if (chk2.bname.value == "") {
+            alert("未輸入暱稱");
+            return false;
+        } else
+            chk2.submit();
+    }
+</script>
