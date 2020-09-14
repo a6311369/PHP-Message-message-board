@@ -13,7 +13,7 @@ $useSimpleAnnotationReader = false;
 $dbParams = array(
     'driver'   => 'pdo_mysql',
     'user'     => 'root',
-    'password' => '!Q2w3e4R',
+    'password' => '1Q2w3e4R',
     'dbname'   => 'board',
     'dbhost'   => '127.0.0.1',
 );

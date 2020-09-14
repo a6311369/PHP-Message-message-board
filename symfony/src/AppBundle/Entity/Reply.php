@@ -18,7 +18,11 @@ class Reply
      */
     protected $id;
     /**
-     * @ORM\ManyToOne(targetEntity="Msg", inversedBy="replies", cascade={"persist"})
+     * @ORM\Column(type="integer")
+     */
+    protected $id2;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Msg", inversedBy="replies", cascade={"persist"})
      * @ORM\JoinColumn(name="msg_id", referencedColumnName="id")
      */
     private $msg;
@@ -30,6 +34,16 @@ class Reply
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getId2()
+    {
+        return $this->id2;
+    }
+
+    public function setId2($id2)
+    {
+        $this->id2 = $id2;
     }
 
     public function getMsg()

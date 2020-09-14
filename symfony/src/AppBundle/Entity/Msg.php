@@ -18,7 +18,7 @@ class Msg
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="Reply", mappedBy="msg", orphanRemoval=true, cascade={"persist", "remove", "merge"})
+     * @ORM\OneToMany(targetEntity="Reply", mappedBy="AppBundle\Entity\msg", orphanRemoval=true, cascade={"persist", "remove", "merge"})
      */
     private $replies;
 
