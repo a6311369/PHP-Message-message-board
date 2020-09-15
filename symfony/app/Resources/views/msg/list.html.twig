@@ -9,9 +9,10 @@
     <input type="hidden" name="reply_id" value={{ message.id }}>
     <input type="text" name="reply_message">
     <input type="submit" name="send" value="回覆"><br>
+    </form>
 
     {% for reply in replies %}
-        {% if reply.id2 == message.id %}
+        {% if reply.num == message.id %}
         <form method="post" action="delreply">
         留言回覆 : {{ reply.message }}
         <input type="hidden" name="del_re_id" value={{ reply.id }} >
@@ -19,11 +20,9 @@
         </form>
         {% endif %}
     {% endfor %}
-    </form>
+    
     <hr>
 {% endfor %}
-
-
 
 <form method="post" action="update" name="chk_mod" onsubmit="return check_mod()">
     <h3>修改留言</h3>

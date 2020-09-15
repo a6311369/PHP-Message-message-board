@@ -55,19 +55,17 @@ class MsgController extends Controller
         $newMessage = trim($_POST['reply_message']);
         $entityManager = $this->getDoctrine()->getManager();
         $msg = new Msg();
+        $newReply = new Reply();
 
         $msg = $entityManager->find('AppBundle:Msg', $newMsg);
-
-        $newReply = new Reply();
         $newReply->setMsg($msg);
         $newReply->setMessage($newMessage);
-        $newReply->setId2($newMsg2);
-
+        $newReply->setnum($newMsg2);
         $entityManager->persist($newReply);
         $entityManager->flush();
+        $entityManager->clear();
 
         return $this->render('msg/creatreply.html.twig');
-
     }
 
     /**
@@ -77,13 +75,18 @@ class MsgController extends Controller
     {
         $id = trim($_POST['del_id']);
         $entityManager = $this->getDoctrine()->getManager();
-
-        $msg = $entityManager->find('AppBundle:Msg', $id);
-        $entityManager->remove($msg);
+        $msgs = $entityManager->find('AppBundle:Msg', $id);
+        $replyRepository = $entityManager->getRepository('AppBundle:Reply');
+        $reply = $replyRepository->findBy(array('num' => $id));
+        foreach ($reply as $reply) {
+            $entityManager->remove($reply);
+        }       
+        $entityManager->remove($msgs);
         $entityManager->flush();
+        $entityManager->clear();
         return $this->render('msg/remove.html.twig');
     }
-    
+
     /**
      * @Route("/msg/delreply", name="delreply")
      */
@@ -95,11 +98,10 @@ class MsgController extends Controller
         $delReply = $entityManager->find('AppBundle:Reply', $id);
         $entityManager->remove($delReply);
         $entityManager->flush();
-        
+        $entityManager->clear();
+
         return $this->render('msg/remove.html.twig');
     }
-
-
 
     /**
      * @Route("/msg/update", name="update")
@@ -115,6 +117,7 @@ class MsgController extends Controller
         $msg = $entityManager->find('AppBundle:Msg', $id);
         $msg->setDescr($newDescr);
         $entityManager->flush();
+        $entityManager->clear();
 
         return $this->render('msg/update.html.twig', [
             'id' => $id,
@@ -126,7 +129,6 @@ class MsgController extends Controller
      */
     public function listAction()
     {
-        //count msg 
         $entityManager = $this->getDoctrine()->getManager();
         $countMsg = $entityManager->getRepository(Msg::class);
         $msgCount = $countMsg->createQueryBuilder('m')
@@ -134,39 +136,16 @@ class MsgController extends Controller
             ->getQuery()
             ->getSingleScalarResult();
 
-        //分頁-s-
-        // // 每頁筆數
-        // $per = 5;
-        // // 計算頁數
-        // $pages = ceil($msgCount / $per);
-        // // 獲取當前頁碼
-        // if (!isset($_GET["page"])) { //假如$_GET["page"]未設置
-        //     $page = 1; //則在此設定起始頁數
-        // } else {
-        //     $page = intval($_GET["page"]); //確認頁數只能夠是數值資料
-        // }
-        // $start = ($page - 1) * $per; //每一頁開始的資料序號
         $msgRepository = $entityManager->getRepository('AppBundle:Msg');
-        // // $msgs = $msgRepository->findBy(array(), array(), $per, $start);
         $messages = $msgRepository->findBy(array(), array());
 
         $replyRepository = $entityManager->getRepository('AppBundle:Reply');
         $replies = $replyRepository->findBy(array(), array());
-        
-
-
-        //分頁-e-
-
 
         return $this->render('msg/list.html.twig', [
             'msgCount' => $msgCount, 'messages' => $messages, 'replies' => $replies
         ]);
-        // return $this->render('msg/list.html.twig', [
-        //     'msgCount' => $msgCount, 'messages' => $messages
-        // ]);
     }
-
-
 
     /**
      * @Route("/msg/batchremove", name="batchremove")
@@ -174,21 +153,12 @@ class MsgController extends Controller
     public function batchRemoveAction()
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $msg = new Msg();
-
-        $batchSize = 2000;
-        $i = 1;
-        $q = $entityManager->createQuery('select m from AppBundle:Msg m');
-        $iterableResult = $q->iterate();
-        while (($row = $iterableResult->next()) !== false) {
-            $entityManager->remove($row[0]);
-            if (($i % $batchSize) === 0) {
-                $entityManager->flush();
-                $entityManager->clear();
-            }
-            ++$i;
-        }
+        $queryBuilder = $entityManager
+            ->createQueryBuilder()
+            ->delete('AppBundle:Msg', 'm');
+        $queryBuilder->getQuery()->execute();
         $entityManager->flush();
+        $entityManager->clear();
 
         return $this->render('msg/batchremove.html.twig');
     }
@@ -199,10 +169,9 @@ class MsgController extends Controller
     public function batchCreateAction()
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $stime = microtime(true);
 
         $batchSize = 2000;
-        for ($i = 1; $i <= 10; ++$i) {
+        for ($i = 1; $i <= 5; ++$i) {
             $msg = new Msg;
             $msg->setName('user' . $i);
             $msg->setDescr('Mr.Smith-' . $i);
@@ -215,10 +184,7 @@ class MsgController extends Controller
         $entityManager->flush();
         $entityManager->clear();
 
-        $etime = microtime(true);
-        $total = $etime - $stime;
-        return $this->render('msg/batchcreate.html.twig', [
-            'total' => $total,
-        ]);
+
+        return $this->render('msg/batchcreate.html.twig');
     }
 }
