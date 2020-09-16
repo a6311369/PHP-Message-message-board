@@ -22,7 +22,7 @@ class MsgController extends Controller
     }
 
     /**
-     * @Route("/msg/creat", name="creat")
+     * @Route("/msg/creat", name="creat", methods={"POST"}))
      */
     public function creatAction(Request $request)
     {
@@ -42,7 +42,7 @@ class MsgController extends Controller
     }
 
     /**
-     * @Route("/msg/creatreply", name="creatreply")
+     * @Route("/msg/creatreply", name="creatreply", methods={"POST"})
      */
     public function creatReplyAction(Request $request)
     {
@@ -64,7 +64,7 @@ class MsgController extends Controller
     }
 
     /**
-     * @Route("/msg/remove", name="remove")
+     * @Route("/msg/remove", name="remove", methods={"POST"})
      */
     public function removeAction(Request $request)
     {
@@ -84,7 +84,7 @@ class MsgController extends Controller
     }
 
     /**
-     * @Route("/msg/delreply", name="delreply")
+     * @Route("/msg/delreply", name="delreply", methods={"POST"})
      */
     public function delreplyAction(Request $request)
     {
@@ -99,7 +99,7 @@ class MsgController extends Controller
     }
 
     /**
-     * @Route("/msg/update", name="update")
+     * @Route("/msg/update", name="update", methods={"POST"})
      */
     public function updateAction(Request $request)
     {
