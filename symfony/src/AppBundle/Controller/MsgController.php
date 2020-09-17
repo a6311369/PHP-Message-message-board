@@ -48,7 +48,7 @@ class MsgController extends Controller
     {
         $newMsg = $request->get('reply_id');
         $newMsg2 = (int)$request->get('reply_id');
-        $newMessage = (int)$request->get('reply_message');
+        $newMessage = $request->get('reply_message');
         $entityManager = $this->getDoctrine()->getManager();
         $msg = new Msg();
         $newReply = new Reply();

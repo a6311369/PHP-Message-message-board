@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4321da7535fe5b9c492a9a11ed757a12",
+    "content-hash": "11526d766c6d1e750ec71ec8fedff909",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -2114,16 +2114,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v3.4.38",
+            "version": "v3.4.44",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "c5a882db43e7163114edffdf3ee2f988328fa6c4"
+                "reference": "d7f1e2c7603cfa200c8e745c24dd3be4c2178b03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/c5a882db43e7163114edffdf3ee2f988328fa6c4",
-                "reference": "c5a882db43e7163114edffdf3ee2f988328fa6c4",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/d7f1e2c7603cfa200c8e745c24dd3be4c2178b03",
+                "reference": "d7f1e2c7603cfa200c8e745c24dd3be4c2178b03",
                 "shasum": ""
             },
             "require": {
@@ -2213,7 +2213,7 @@
                 "cache/integration-tests": "dev-master",
                 "doctrine/annotations": "~1.0",
                 "doctrine/cache": "~1.6",
-                "doctrine/data-fixtures": "1.0.*",
+                "doctrine/data-fixtures": "^1.1",
                 "doctrine/dbal": "~2.4",
                 "doctrine/doctrine-bundle": "~1.4",
                 "doctrine/orm": "~2.4,>=2.4.5",
@@ -2222,7 +2222,7 @@
                 "ocramius/proxy-manager": "~0.4|~1.0|~2.0",
                 "phpdocumentor/reflection-docblock": "^3.0|^4.0",
                 "predis/predis": "~1.0",
-                "symfony/phpunit-bridge": "^3.4.31|^4.3.4|~5.0",
+                "symfony/phpunit-bridge": "^5.2",
                 "symfony/security-acl": "~2.8|~3.0"
             },
             "type": "library",
@@ -2266,7 +2266,21 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2020-02-29T10:21:57+00:00"
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-08-31T05:54:22+00:00"
         },
         {
             "name": "twig/twig",
