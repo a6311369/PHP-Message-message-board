@@ -4,16 +4,11 @@
 namespace Tests\BankBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
-
-
 
 class BankControllerTest extends WebTestCase
 {
     public function testShowPost()
     {
-        // $client = static::createClient();
         $client = static::createClient([], [
             'HTTP_HOST' => 'tuffy.com:8000',
         ] );
