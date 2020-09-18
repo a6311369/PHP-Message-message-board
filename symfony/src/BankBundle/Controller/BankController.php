@@ -39,6 +39,7 @@ class BankController extends Controller
             'depositMoney' => $depositMoney,
             'totalMoney' => $totalMoney,
         ];
+
         return new Response(json_encode($data));
     }
 
@@ -69,6 +70,7 @@ class BankController extends Controller
             'withdrawMoney' => $withdrawMoney,
             'totalMoney' => $totalMoney,
         ];
+
         return new Response(json_encode($data));
     }
 }
