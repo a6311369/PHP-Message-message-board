@@ -52,24 +52,32 @@ class BankController extends Controller
         $id = $request->get('id');
         $withdrawMoney = (int)$request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
-        $bank = new Bank();
-        $bankdetail = new Bankdetail();
+        // $bank = new Bank();
+        // $bankdetail = new Bankdetail();
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankmoney = (int)$bank->getMoney();
         $totalMoney = $bankmoney - $withdrawMoney;
         $bankuUser = $bank->getUser();
-        $bank->setMoney($totalMoney);
-        $bankdetail->setUser_id($id);
-        $bankdetail->setNotes('提款');
-        $entityManager->persist($bankdetail);
-        $entityManager->flush();
-        $entityManager->clear();
+        // $bank->setMoney($totalMoney);
+        // $bankdetail->setUser_id($id);
+        // $bankdetail->setNotes('提款');
+        // $entityManager->persist($bankdetail);
+        // $entityManager->flush();
+        // $entityManager->clear();
 
+        // $data = [
+        //     'bankuUser' => $bankuUser,
+        //     'withdrawMoney' => $withdrawMoney,
+        //     'totalMoney' => $totalMoney,
+        // ];
+
+        
         $data = [
-            'bankuUser' => $bankuUser,
+            'id' => $id,
             'withdrawMoney' => $withdrawMoney,
             'totalMoney' => $totalMoney,
         ];
+
 
         return new Response(json_encode($data));
     }
