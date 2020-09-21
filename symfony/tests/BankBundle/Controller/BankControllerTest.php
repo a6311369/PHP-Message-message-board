@@ -13,12 +13,13 @@ class BankControllerTest extends WebTestCase
             'HTTP_HOST' => 'tuffy.com:8000',
         ] );
 
-        $client->request('POST', '/bank/withdraw', ['id' => '2', 'depositMoney' => '50']);
+        $client->request('POST', '/bank/deposit', ['id' => '2', 'depositMoney' => '50']);
 
         $this->assertEquals(
             200, 
             $client->getResponse()->getStatusCode()
         );
+
         $client->insulate();
 
     }

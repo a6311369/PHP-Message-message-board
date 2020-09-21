@@ -21,17 +21,17 @@ class BankController extends Controller
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
         $entityManager = $this->getDoctrine()->getManager();
-        $bankdetail = new Bankdetail();
+        // $bankdetail = new Bankdetail();
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankmoney = (int)$bank->getMoney();
         $totalMoney = $depositMoney + $bankmoney;
         $bankuUser = $bank->getUser();
         $bank->setMoney($totalMoney);
-        $bankdetail->setUser_id($id);
-        $bankdetail->setNotes('存款');
-        $entityManager->persist($bankdetail);
-        $entityManager->flush();
-        $entityManager->clear();
+        // $bankdetail->setUser_id($id);
+        // $bankdetail->setNotes('存款');
+        // $entityManager->persist($bankdetail);
+        // $entityManager->flush();
+        // $entityManager->clear();
 
         $data = [
             'bankuUser' => $bankuUser,
@@ -51,11 +51,8 @@ class BankController extends Controller
         $id = $request->get('id');
         $withdrawMoney = (int)$request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
-        // $bankdetail = new Bankdetail();
+        $bankdetail = new Bankdetail();
         $bank = $entityManager->find('BankBundle:Bank', $id);
-        //test
-        $bankdetail = $entityManager->findAll('BankBundle:Bankdetail');
-
         $bankmoney = (int)$bank->getMoney();
         $totalMoney = $bankmoney - $withdrawMoney;
         $bankuUser = $bank->getUser();
@@ -65,7 +62,6 @@ class BankController extends Controller
         $entityManager->persist($bankdetail);
         $entityManager->flush();
         $entityManager->clear();
-
         $data = [
             'bankuUser' => $bankuUser,
             'withdrawMoney' => $withdrawMoney,
