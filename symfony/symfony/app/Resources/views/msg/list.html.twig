@@ -1,0 +1,64 @@
+{# app/Resources/views/msg/list.html.twig #}
+<h3> 目前留言總筆數有 : {{msgCount}} </h3><br>
+
+{% for message in messages %}
+    <form method="post" action="creatreply">
+    ID : {{ message.id }} <br>
+    姓名 : {{ message.name }} <br>
+    留言 : {{ message.descr}} <br>
+    <input type="hidden" name="reply_id" value={{ message.id }}>
+    <input type="text" name="reply_message">
+    <input type="submit" name="send" value="回覆"><br>
+    </form>
+
+    {% for reply in replies %}
+        {% if reply.num == message.id %}
+        <form method="post" action="delreply">
+        留言回覆 : {{ reply.message }}
+        <input type="hidden" name="del_re_id" value={{ reply.id }} >
+        <input type="submit" name="send" value="刪除回覆"><br>
+        </form>
+        {% endif %}
+    {% endfor %}
+    
+    <hr>
+{% endfor %}
+
+<form method="post" action="update" name="chk_mod" onsubmit="return check_mod()">
+    <h3>修改留言</h3>
+    <p>
+        要修改留言的ID:<br>
+        <input type="text" name="mod_id">
+        <p>
+            要修改的留言:<br>
+            <textarea rows="1" cols="20" name="mod_content"></textarea><br>
+            <input type="submit" value="修改留言" />
+            <p>
+</form>
+<hr>
+<form action="remove" method="post" name="chk_del" onsubmit="return check_del()">
+    要刪除留言的ID :
+    <input type="text" name="del_id" />
+    　 <input type="submit" value="刪除留言" />
+    <p>
+</form>
+<hr>
+<input type="button" name="Submit" value="查詢留言" class="btn" onclick="location.href='list'" />
+<input type="button" name="Submit" value="返回留言板" class="btn" onclick="location.href='home'" />
+
+<script type="text/javascript">
+    function check_mod() {
+        if (chk_mod.mod_id.value == "") {
+            alert("未輸入修改ID");
+            return false;
+        } else
+            chk_mod.submit();
+    }
+    function check_del() {
+        if (chk_del.del_id.value == "") {
+            alert("未輸入刪除ID");
+            return false;
+        } else
+            chk_del.submit();
+    }
+</script>
