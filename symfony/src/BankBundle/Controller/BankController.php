@@ -7,7 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use BankBundle\Entity\Bank;
-use BankBundle\Entity\Bankdetail;
+use BankBundle\Entity\BankDetail;
 use Doctrine\Persistence\ObjectManager;
 
 
@@ -25,7 +25,7 @@ class BankController extends Controller
         
         $entityManager = $this->getDoctrine()->getManager();
 
-        $bankDetail = new Bankdetail();
+        $bankDetail = new BankDetail();
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankmoney = (int)$bank->getMoney();
         $totalMoney = $depositMoney + $bankmoney;
@@ -46,7 +46,6 @@ class BankController extends Controller
         ];
 
         return new Response(json_encode($data));
-        // return new Response($totalMoney);
         
     }
 
@@ -60,7 +59,7 @@ class BankController extends Controller
         $withdrawMoney = (int)$request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
 
-        $bankDetail = new Bankdetail();
+        $bankDetail = new BankDetail();
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankmoney = (int)$bank->getMoney();
         $totalMoney = $bankmoney - $withdrawMoney;
