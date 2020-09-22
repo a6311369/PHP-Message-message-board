@@ -7,7 +7,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use BankBundle\Entity\Bank;
-use BankBundle\Entity\Bankdetail;
+use BankBundle\Entity\BankDetail;
+use Doctrine\Persistence\ObjectManager;
+
 
 
 class BankController extends Controller
@@ -20,16 +22,20 @@ class BankController extends Controller
         //存款
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
+        
         $entityManager = $this->getDoctrine()->getManager();
-        $bankdetail = new Bankdetail();
+
+        $bankDetail = new BankDetail();
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankmoney = (int)$bank->getMoney();
         $totalMoney = $depositMoney + $bankmoney;
+        
         $bankuUser = $bank->getUser();
         $bank->setMoney($totalMoney);
-        $bankdetail->setUser_id($id);
-        $bankdetail->setNotes('存款');
-        $entityManager->persist($bankdetail);
+        $bankDetail->setUser_id($id);
+        $bankDetail->setNotes('存款');
+        
+        $entityManager->persist($bankDetail);
         $entityManager->flush();
         $entityManager->clear();
 
@@ -40,6 +46,7 @@ class BankController extends Controller
         ];
 
         return new Response(json_encode($data));
+        
     }
 
     /**
@@ -51,17 +58,21 @@ class BankController extends Controller
         $id = $request->get('id');
         $withdrawMoney = (int)$request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
-        $bankdetail = new Bankdetail();
+
+        $bankDetail = new BankDetail();
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankmoney = (int)$bank->getMoney();
         $totalMoney = $bankmoney - $withdrawMoney;
+        
         $bankuUser = $bank->getUser();
         $bank->setMoney($totalMoney);
-        $bankdetail->setUser_id($id);
-        $bankdetail->setNotes('提款');
-        $entityManager->persist($bankdetail);
+        $bankDetail->setUser_id($id);
+        $bankDetail->setNotes('提款');
+        
+        $entityManager->persist($bankDetail);
         $entityManager->flush();
         $entityManager->clear();
+
         $data = [
             'bankuUser' => $bankuUser,
             'withdrawMoney' => $withdrawMoney,
