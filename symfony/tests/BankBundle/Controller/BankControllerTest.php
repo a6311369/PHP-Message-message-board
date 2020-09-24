@@ -32,9 +32,18 @@ class BankControllerTest extends WebTestCase
         {
             $client = static::createClient();
             $client->request('POST', '/bank/deposit', ['id' => '1', 'depositMoney' => '50']);
-            // $this->assertNotNull($client);
             $this->assertJsonStringEqualsJsonString(
-                json_encode(array("totalMoney" => "503400")), json_encode(array("totalMoney" => "503400"))
+                json_encode(array("bankuUser" => "User0")), json_encode(array("bankuUser" => "User0"))
+              );
+            $client->insulate();
+            $client->restart();
+        }
+        public function testWithdrawPost()
+        {
+            $client = static::createClient();
+            $client->request('POST', '/bank/withdraw', ['id' => '1', 'depositMoney' => '50']);
+            $this->assertJsonStringEqualsJsonString(
+                json_encode(array("bankuUser" => "User0")), json_encode(array("bankuUser" => "User0"))
               );
             $client->insulate();
             $client->restart();

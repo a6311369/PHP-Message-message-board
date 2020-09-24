@@ -25,6 +25,11 @@
                 <directory>src/*Bundle/Resources</directory>
                 <directory>src/*/*Bundle/Resources</directory>
                 <directory>src/*/Bundle/*Bundle/Resources</directory>
+                <directory>src/AppBundle</directory>
+                <directory>src/BankBundle/DataFixtures</directory>
+                <exclude>tests/BankBundle/Controller/DefaultControllerTest.php</exclude>
+                <exclude>src/BankBundle/Controller/DefaultController.php</exclude>
+                <exclude>src/BankBundle/BankBundle.php</exclude>
             </exclude>
         </whitelist>
     </filter>

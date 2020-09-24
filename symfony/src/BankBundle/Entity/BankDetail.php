@@ -14,7 +14,7 @@ class BankDetail
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
@@ -26,11 +26,6 @@ class BankDetail
      * @ORM\Column(type="integer")
      */
     protected $user_id;
-
-    public function getId()
-    {
-        return $this->id;
-    }
 
     public function getUser_id()
     {

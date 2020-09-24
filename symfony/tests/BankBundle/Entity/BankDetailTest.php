@@ -6,7 +6,7 @@ namespace Tests\BankBundle\Entity;
 use BankBundle\Entity\BankDetail;
 use PHPUnit\Framework\TestCase;
 
-class BankControllerTest extends TestCase
+class BankDetailEntityTest extends TestCase
 {
     /**
      * 測試function setUser_id

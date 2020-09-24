@@ -6,8 +6,16 @@ namespace Tests\BankBundle\Entity;
 use BankBundle\Entity\Bank;
 use PHPUnit\Framework\TestCase;
 
-class BankControllerTest extends TestCase
+class BankEntityTest extends TestCase
 {
+     /**
+     * 測試function getId
+     */
+    public function testGetId()
+    {
+        $bank = new Bank();
+        $this->assertEquals(500, $bank->getId());
+    }
     /**
      * 測試function setMoney
      * 測試function getMoney
@@ -26,7 +34,7 @@ class BankControllerTest extends TestCase
     public function testGetUser()
     {
         $bank = new Bank();
-        $bank->setUser('QQ');
-        $this->assertEquals('QQ', $bank->getUser());
+        $bank->setUser('Q1');
+        $this->assertEquals('Q1', $bank->getUser());
     }
 }
