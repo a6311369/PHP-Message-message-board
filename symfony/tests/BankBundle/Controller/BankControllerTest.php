@@ -12,22 +12,6 @@ use BankBundle\Entity\Bank;
 
 class BankControllerTest extends WebTestCase
 {
-    public function testDeposit()
-    {
-        $inBankMoney = 1000;
-        $depositMoney = 500;
-        $totalMoney = $depositMoney + $inBankMoney;
-        $this->assertEquals(1500, $totalMoney);
-    }
-
-        public function testWithdraw()
-        {
-            $inBankMoney = 1000;
-            $depositMoney = 500;
-            $totalMoney = $inBankMoney - $depositMoney;
-            $this->assertEquals(500, $totalMoney);
-        }
-
         public function testDepositPost()
         {
             $client = static::createClient();

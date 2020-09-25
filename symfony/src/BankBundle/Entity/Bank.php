@@ -27,11 +27,6 @@ class Bank
      */
     protected $money;
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
     public function getMoney()
     {
         return $this->money;

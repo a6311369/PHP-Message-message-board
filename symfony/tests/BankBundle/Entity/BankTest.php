@@ -8,14 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class BankEntityTest extends TestCase
 {
-     /**
-     * 測試function getId
-     */
-    public function testGetId()
-    {
-        $bank = new Bank();
-        $this->assertEquals(500, $bank->getId());
-    }
     /**
      * 測試function setMoney
      * 測試function getMoney
@@ -34,7 +26,7 @@ class BankEntityTest extends TestCase
     public function testGetUser()
     {
         $bank = new Bank();
-        $bank->setUser('Q1');
-        $this->assertEquals('Q1', $bank->getUser());
+        $bank->setUser('User0');
+        $this->assertEquals('User0', $bank->getUser());
     }
 }

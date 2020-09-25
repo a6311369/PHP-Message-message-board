@@ -20,8 +20,14 @@ class BankFixtures extends Fixture
         }
         for ($i = 0; $i < 3; $i++) {
             $bank = new BankDetail();
-            $bank->setUser_id(1);
+            $bank->setUserName('User0');
             $bank->setNotes('存款');
+            $manager->persist($bank);
+        }
+        for ($i = 0; $i < 3; $i++) {
+            $bank = new BankDetail();
+            $bank->setUserName('User0');
+            $bank->setNotes('提款');
             $manager->persist($bank);
         }
 

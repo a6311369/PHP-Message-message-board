@@ -23,18 +23,18 @@ class BankDetail
      */
     protected $notes;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=100)
      */
-    protected $user_id;
+    protected $userName;
 
-    public function getUser_id()
+    public function getUserName()
     {
-        return $this->user_id;
+        return $this->userName;
     }
 
-    public function setUser_id($user_id)
+    public function setUserName($userName)
     {
-        $this->user_id = $user_id;
+        $this->userName = $userName;
     }
 
     public function getNotes()

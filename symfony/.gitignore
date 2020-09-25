@@ -16,3 +16,4 @@
 /vendor/
 /.phpunit.result.cache
 /src/BankBundle/Resources/
+/phpunit.sh
