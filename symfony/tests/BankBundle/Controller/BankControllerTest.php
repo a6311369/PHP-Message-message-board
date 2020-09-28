@@ -12,24 +12,32 @@ use BankBundle\Entity\Bank;
 
 class BankControllerTest extends WebTestCase
 {
-        public function testDepositPost()
-        {
-            $client = static::createClient();
-            $client->request('POST', '/bank/deposit', ['id' => '1', 'depositMoney' => '50']);
-            $this->assertJsonStringEqualsJsonString(
-                json_encode(array("bankuUser" => "User0")), json_encode(array("bankuUser" => "User0"))
-              );
-            $client->insulate();
-            $client->restart();
-        }
-        public function testWithdrawPost()
-        {
-            $client = static::createClient();
-            $client->request('POST', '/bank/withdraw', ['id' => '1', 'depositMoney' => '50']);
-            $this->assertJsonStringEqualsJsonString(
-                json_encode(array("bankuUser" => "User0")), json_encode(array("bankuUser" => "User0"))
-              );
-            $client->insulate();
-            $client->restart();
-        }
+  public function testDepositPost()
+  {
+    $client = static::createClient();
+    $client->request('POST', '/bank/deposit', ['id' => '1', 'depositMoney' => '50']);
+
+    var_dump($client);
+    $this->assertEquals(
+      200,
+      $client->getResponse()->getStatusCode()
+    );
+
+    $client->insulate();
+    $client->restart();
+  }
+
+  public function testWithdrawPost()
+  {
+    $client = static::createClient();
+    $client->request('POST', '/bank/withdraw', ['id' => '1', 'depositMoney' => '50']);
+
+    $this->assertEquals(
+      200,
+      $client->getResponse()->getStatusCode()
+    );
+
+    $client->insulate();
+    $client->restart();
+  }
 }

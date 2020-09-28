@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 use BankBundle\Entity\Bank;
 use BankBundle\Entity\BankDetail;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\ORM\Tools\SchemaTool;
+use Symfony\Component\HttpKernel\KernelInterface;
+
 
 
 
@@ -44,7 +47,7 @@ class BankController extends Controller
             'totalMoney' => $totalMoney,
         ];
 
-        return new Response(json_encode($data));
+        return new Response(json_encode($data, true));
     }
 
     /**
@@ -77,6 +80,6 @@ class BankController extends Controller
             'totalMoney' => $totalMoney,
         ];
 
-        return new Response(json_encode($data));
+        return new Response(json_encode($data, true));
     }
 }
