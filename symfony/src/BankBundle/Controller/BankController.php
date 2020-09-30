@@ -14,91 +14,79 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class BankController extends Controller
 {
-    private $objectManager;
 
-    public function __construct(ObjectManager $objectManager)
+    /**
+     * @Route("/bank/deposit", name="deposit", methods={"GET", "POST"}))
+     */
+    public function depositAction(Request $request)
     {
-        $this->objectManager = $objectManager;
+        //存款
+        $id = $request->get('id');
+        $depositMoney = $request->get('depositMoney');
+        $entityManager = $this->getDoctrine()->getManager();
+        $bankDetail = new BankDetail();
+        $bank = $entityManager->find('BankBundle:Bank', $id);
+        $bankMoney = (int)$bank->getMoney();
+        $bankUser = $bank->getUser();       
+        $totalMoney = $depositMoney + $bankMoney;
+
+
+        $bankuUser = $bank->getUser();
+        $bank->setMoney($totalMoney);
+        $bankDetail->setUserName($bankUser);
+        $bankDetail->setNotes('存款');
+
+
+        $entityManager->persist($bankDetail);
+        $entityManager->flush();
+        $entityManager->clear();
+
+
+        $data = [
+            'bankuUser' => $bankuUser,
+            'depositMoney' => $depositMoney,
+            'totalMoney' => $totalMoney,
+        ];
+
+
+        return new Response(json_encode($data, true));
     }
 
-    public function depositAction($id, $depositMoney)
+
+    /**
+     * @Route("/bank/withdraw", name="withdraw", methods={"GET", "POST"}))
+     */
+    public function withdrawAction(Request $request)
     {
-        $bankRepository = $this->objectManager
-            ->getRepository(Bank::class);
-
-        $bank = $bankRepository->find($id);
-        $bankMoney = $bank->getMoney();
-        $totalMoney = $bankMoney + $depositMoney;
+        //提款
+        $id = $request->get('id');
+        $withdrawMoney = (int)$request->get('withdrawMoney');
+        $entityManager = $this->getDoctrine()->getManager();
 
 
-        $bankDetailRepository = $this->objectManager
-            ->getRepository(BankDetail::class);
-
-        $bank = $bankDetailRepository->find($id);
-
-        return array($bank->getUser(), $totalMoney);
-
-        // //存款(原有code-BK)
-        // $id = $request->get('id');
-        // $depositMoney = $request->get('depositMoney');
-        // $entityManager = $this->getDoctrine()->getManager();
-        // $bankDetail = new BankDetail();
-        // $bank = $entityManager->find('BankBundle:Bank', $id);
-        // $bankMoney = (int)$bank->getMoney();
-        // $bankUser = $bank->getUser();
-        // $totalMoney = $depositMoney + $bankMoney;
-
-        // $bank->setMoney($totalMoney);
-        // $bankDetail->setUserName($bankUser);
-        // $bankDetail->setNotes('存款');
-
-        // $entityManager->persist($bankDetail);
-        // $entityManager->flush();
-        // $entityManager->clear();
-
-        // $data = [
-        //     'bankuUser' => $bankUser,
-        //     'depositMoney' => $depositMoney,
-        //     'totalMoney' => $totalMoney,
-        // ];
-
-        // return new Response(json_encode($data, true));
-    }
-
-    public function withdrawAction($id)
-    {
-        $bankRepository = $this->objectManager
-            ->getRepository(Bank::class);
-        $bank = $bankRepository->find($id);
-
-        return array($bank->getUser(), $bank->getMoney());
+        $bankDetail = new BankDetail();
+        $bank = $entityManager->find('BankBundle:Bank', $id);
+        $bankMoney = (int)$bank->getMoney();
+        $totalMoney = $bankMoney - $withdrawMoney;
+        $bankUser = $bank->getUser();       
+        $bankuUser = $bank->getUser();
+        $bank->setMoney($totalMoney);
+        $bankDetail->setUserName($bankUser);
+        $bankDetail->setNotes('提款');
 
 
+        $entityManager->persist($bankDetail);
+        $entityManager->flush();
+        $entityManager->clear();
 
-        //     //提款(原有code-BK)
-        //     $id = $request->get('id');
-        //     $withdrawMoney = (int)$request->get('withdrawMoney');
-        //     $entityManager = $this->getDoctrine()->getManager();
 
-        //     $bankDetail = new BankDetail();
-        //     $bank = $entityManager->find('BankBundle:Bank', $id);
-        //     $bankMoney = (int)$bank->getMoney();
-        //     $totalMoney = $bankMoney - $withdrawMoney;
-        //     $bankUser = $bank->getUser();
-        //     $bank->setMoney($totalMoney);
-        //     $bankDetail->setUserName($bankUser);
-        //     $bankDetail->setNotes('提款');
+        $data = [
+            'bankuUser' => $bankuUser,
+            'withdrawMoney' => $withdrawMoney,
+            'totalMoney' => $totalMoney,
+        ];
 
-        //     $entityManager->persist($bankDetail);
-        //     $entityManager->flush();
-        //     $entityManager->clear();
 
-        //     $data = [
-        //         'bankuUser' => $bankUser,
-        //         'withdrawMoney' => $withdrawMoney,
-        //         'totalMoney' => $totalMoney,
-        //     ];
-
-        //     return new Response(json_encode($data, true));
+        return new Response(json_encode($data, true));
     }
 }
