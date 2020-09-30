@@ -21,37 +21,22 @@ class BankController extends Controller
         $this->objectManager = $objectManager;
     }
 
-    public function depositAction($id)
+    public function depositAction($id, $depositMoney)
     {
         $bankRepository = $this->objectManager
             ->getRepository(Bank::class);
+
         $bank = $bankRepository->find($id);
+        $bankMoney = $bank->getMoney();
+        $totalMoney = $bankMoney + $depositMoney;
 
-        return array($bank->getUser(), $bank->getMoney());
 
-        //存款(Test code)
-        // $entityManager = $this->getDoctrine()->getManager();
-        // $bank = $entityManager->find('BankBundle:Bank', $id);
-        // $bankMoney = (int)$bank->getMoney();
-        // $bankUser = $bank->getUser();
-        // $totalMoney = $depositMoney + $bankMoney;
+        $bankDetailRepository = $this->objectManager
+            ->getRepository(BankDetail::class);
 
-        // $bank->setMoney($totalMoney);
-        // $bankDetail->setUserName($bankUser);
-        // $bankDetail->setNotes('存款');
+        $bank = $bankDetailRepository->find($id);
 
-        // $entityManager->persist($bankDetail);
-        // $entityManager->flush();
-        // $entityManager->clear();
-
-        // $data = [
-        //     'bankuUser' => $bankUser,
-        //     'depositMoney' => $depositMoney,
-        //     'totalMoney' => $totalMoney,
-        // ];
-
-        // return $bankUser;
-        
+        return array($bank->getUser(), $totalMoney);
 
         // //存款(原有code-BK)
         // $id = $request->get('id');
@@ -116,6 +101,4 @@ class BankController extends Controller
 
         //     return new Response(json_encode($data, true));
     }
-
-
 }
