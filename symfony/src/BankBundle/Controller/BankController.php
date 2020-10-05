@@ -24,30 +24,29 @@ class BankController extends Controller
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
         $entityManager = $this->getDoctrine()->getManager();
+        $datetime = new \DateTime;
         $bankDetail = new BankDetail();
+        $datetime = $datetime->format('Y-m-d H:i:s');
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankMoney = (int)$bank->getMoney();
-        $bankUser = $bank->getUser();       
+        $bankUser = $bank->getUser();
         $totalMoney = $depositMoney + $bankMoney;
-
-
         $bankuUser = $bank->getUser();
         $bank->setMoney($totalMoney);
         $bankDetail->setUserName($bankUser);
         $bankDetail->setNotes('存款');
-
+        $bankDetail->setCreatedTime($datetime);
 
         $entityManager->persist($bankDetail);
         $entityManager->flush();
         $entityManager->clear();
 
-
         $data = [
             'bankuUser' => $bankuUser,
             'depositMoney' => $depositMoney,
             'totalMoney' => $totalMoney,
+            'datetime' => $datetime,
         ];
-
 
         return new Response(json_encode($data, true));
     }
@@ -62,30 +61,29 @@ class BankController extends Controller
         $id = $request->get('id');
         $withdrawMoney = (int)$request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
-
-
         $bankDetail = new BankDetail();
+        $datetime = new \DateTime;
+        $datetime = $datetime->format('Y-m-d H:i:s');
         $bank = $entityManager->find('BankBundle:Bank', $id);
         $bankMoney = (int)$bank->getMoney();
         $totalMoney = $bankMoney - $withdrawMoney;
-        $bankUser = $bank->getUser();       
+        $bankUser = $bank->getUser();
         $bankuUser = $bank->getUser();
         $bank->setMoney($totalMoney);
         $bankDetail->setUserName($bankUser);
         $bankDetail->setNotes('提款');
-
+        $bankDetail->setCreatedTime($datetime);
 
         $entityManager->persist($bankDetail);
         $entityManager->flush();
         $entityManager->clear();
 
-
         $data = [
             'bankuUser' => $bankuUser,
             'withdrawMoney' => $withdrawMoney,
             'totalMoney' => $totalMoney,
+            'datetime' => $datetime,
         ];
-
 
         return new Response(json_encode($data, true));
     }

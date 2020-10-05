@@ -27,6 +27,11 @@ class BankDetail
      */
     protected $userName;
 
+    /**
+    *  @ORM\Column(type="string", length=100)
+    */
+    protected $createdTime;
+
     public function getUserName()
     {
         return $this->userName;
@@ -45,5 +50,15 @@ class BankDetail
     public function setNotes($notes)
     {
         $this->notes = $notes;
+    }
+
+    public function getCreatedTime()
+    {
+        return $this->createdTime;
+    }
+
+    public function setCreatedTime($createdTime)
+    {
+        $this->createdTime = $createdTime;
     }
 }
