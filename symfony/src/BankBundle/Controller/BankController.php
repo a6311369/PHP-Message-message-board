@@ -27,6 +27,7 @@ class BankController extends Controller
         $depositMoney = $request->get('depositMoney');
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getConnection()->beginTransaction();
+        //悲觀鎖
         try {
             $datetime = new \DateTime;
             $bankDetail = new BankDetail();
@@ -42,6 +43,9 @@ class BankController extends Controller
             $bankDetail->setUserName($bankUser);
             $bankDetail->setNotes('存款');
             $bankDetail->setCreatedTime($datetime);
+            $bankDetail->setModifyMoney($depositMoney);
+            $bankDetail->setOldMoney($bankMoney);
+            $bankDetail->setNewMoney($totalMoney);
 
             $entityManager->persist($bankDetail);
             $entityManager->flush();
@@ -73,6 +77,7 @@ class BankController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->getConnection()->beginTransaction();
+        //悲觀鎖
         try {
             $bankDetail = new BankDetail();
             $datetime = new \DateTime;
@@ -88,6 +93,9 @@ class BankController extends Controller
             $bankDetail->setUserName($bankUser);
             $bankDetail->setNotes('提款');
             $bankDetail->setCreatedTime($datetime);
+            $bankDetail->setModifyMoney($withdrawMoney);
+            $bankDetail->setOldMoney($bankMoney);
+            $bankDetail->setNewMoney($totalMoney);
 
             $entityManager->persist($bankDetail);
             $entityManager->flush();

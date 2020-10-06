@@ -26,6 +26,18 @@ class BankDetail
      * @ORM\Column(type="string", length=100)
      */
     protected $userName;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $modifyMoney;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $oldMoney;
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $newMoney;
 
     /**
     *  @ORM\Column(type="string", length=100)
@@ -50,6 +62,36 @@ class BankDetail
     public function setNotes($notes)
     {
         $this->notes = $notes;
+    }
+
+    public function getModifyMoney()
+    {
+        return $this->modifyMoney;
+    }
+
+    public function setModifyMoney($modifyMoney)
+    {
+        $this->modifyMoney = $modifyMoney;
+    }
+
+    public function getOldMoney()
+    {
+        return $this->oldMoney;
+    }
+
+    public function setOldMoney($oldMoney)
+    {
+        $this->oldMoney = $oldMoney;
+    }
+
+    public function getNewMoney()
+    {
+        return $this->newMoney;
+    }
+
+    public function setNewMoney($newMoney)
+    {
+        $this->newMoney = $newMoney;
     }
 
     public function getCreatedTime()
