@@ -5,6 +5,7 @@ namespace BankBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="bank")
@@ -27,6 +28,12 @@ class Bank
      */
     protected $money;
 
+    /** 
+     * @ORM\Version 
+     * @ORM\Column(type="integer") 
+     */
+    private $version;
+
     public function getMoney()
     {
         return $this->money;
@@ -46,4 +53,10 @@ class Bank
     {
         $this->user = $user;
     }
+
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
 }

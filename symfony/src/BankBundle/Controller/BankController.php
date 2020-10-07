@@ -26,18 +26,20 @@ class BankController extends Controller
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->getConnection()->beginTransaction();
-        //悲觀鎖
-        try {
-            $datetime = new \DateTime;
-            $bankDetail = new BankDetail();
-            $datetime = $datetime->format('Y-m-d H:i:s.u');
 
-            $bank = $entityManager->find('BankBundle:Bank', $id, LockMode::PESSIMISTIC_WRITE);
-            $bankMoney = (int)$bank->getMoney();
-            $bankUser = $bank->getUser();
-            $bankuUser = $bank->getUser();
-            $totalMoney = $depositMoney + $bankMoney;
+        $datetime = new \DateTime;
+        $bankDetail = new BankDetail();
+        $datetime = $datetime->format('Y-m-d H:i:s.u');
+
+        $bank = $entityManager->find('BankBundle:Bank', $id);
+        $bankMoney = (int)$bank->getMoney();
+        $bankUser = $bank->getUser();
+        $bankuUser = $bank->getUser();
+        $version = $bank->getVersion();
+        $totalMoney = $depositMoney + $bankMoney;
+        //樂觀鎖
+        try {
+            $entityManager->lock($bank, LockMode::OPTIMISTIC, $version);
 
             $bank->setMoney($totalMoney);
             $bankDetail->setUserName($bankUser);
@@ -49,10 +51,8 @@ class BankController extends Controller
 
             $entityManager->persist($bankDetail);
             $entityManager->flush();
-            $entityManager->getConnection()->commit();
-        } catch (Exception $e) {
-            $entityManager->getConnection()->rollBack();
-            throw $e;
+        } catch (OptimisticLockException  $e) {
+            echo "Sorry, but someone else has already changed this entity. Please apply the changes again!";
         }
         $entityManager->clear();
         $data = [
@@ -75,19 +75,21 @@ class BankController extends Controller
         $id = $request->get('id');
         $withdrawMoney = (int)$request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->getConnection()->beginTransaction();
-        //悲觀鎖
-        try {
-            $bankDetail = new BankDetail();
-            $datetime = new \DateTime;
-            $datetime = $datetime->format('Y-m-d H:i:s.u');
 
-            $bank = $entityManager->find('BankBundle:Bank', $id, LockMode::PESSIMISTIC_WRITE);
-            $bankMoney = (int)$bank->getMoney();
-            $bankUser = $bank->getUser();
-            $bankuUser = $bank->getUser();
-            $totalMoney = $bankMoney - $withdrawMoney;
+        $bankDetail = new BankDetail();
+        $datetime = new \DateTime;
+        $datetime = $datetime->format('Y-m-d H:i:s.u');
+
+        $bank = $entityManager->find('BankBundle:Bank', $id);
+        $bankMoney = (int)$bank->getMoney();
+        $bankUser = $bank->getUser();
+        $bankuUser = $bank->getUser();
+        $version = $bank->getVersion();
+        $totalMoney = $bankMoney - $withdrawMoney;
+        //樂觀鎖
+        try {
+
+            $entityManager->lock($bank, LockMode::OPTIMISTIC, $version);
 
             $bank->setMoney($totalMoney);
             $bankDetail->setUserName($bankUser);
@@ -99,10 +101,8 @@ class BankController extends Controller
 
             $entityManager->persist($bankDetail);
             $entityManager->flush();
-            $entityManager->getConnection()->commit();
-        } catch (Exception $e) {
-            $entityManager->getConnection()->rollBack();
-            throw $e;
+        } catch (OptimisticLockException  $e) {
+            echo "Sorry, but someone else has already changed this entity. Please apply the changes again!";
         }
         $entityManager->clear();
         $data = [
