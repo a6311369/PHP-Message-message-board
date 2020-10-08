@@ -29,4 +29,15 @@ class BankEntityTest extends TestCase
         $bank->setUser('User0');
         $this->assertEquals('User0', $bank->getUser());
     }
+
+    /**
+     * 測試function setUser
+     * 測試function getUser
+     */
+    public function testVersion()
+    {
+        $bank = new Bank();
+        $bank->setVersion(1);
+        $this->assertEquals(1, $bank->getVersion());
+    }
 }

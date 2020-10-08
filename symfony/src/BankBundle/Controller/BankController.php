@@ -65,7 +65,6 @@ class BankController extends Controller
         return new Response(json_encode($data, true));
     }
 
-
     /**
      * @Route("/bank/withdraw", name="withdraw", methods={"GET", "POST"}))
      */

@@ -16,46 +16,26 @@ use Doctrine\Persistence\ObjectRepository;
 
 class BankControllerTest extends WebTestCase
 {
-  public function testDepositPost()
+    public function testDeposit()
   {
-    $bank = new Bank();
-    $bank->setMoney(10000);
-    $bank->setUser('QOO1');
-
-    $bankRepository = $this->createMock(ObjectRepository::class);
-    $bankRepository->expects($this->any())
-      ->method('find')
-      ->willReturn($bank);
-
-    $objectManager = $this->createMock(ObjectManager::class);
-    $objectManager->expects($this->any())
-      ->method('getRepository')
-      ->willReturn($bankRepository);
+    $client = static::createClient();
+    $client->request('POST', '/bank/deposit', ['id' => '2', 'depositMoney' => '50']);
 
 
-    $array = ['QOO1', 11000];
+    $this->assertEquals(200,$client->getResponse()->getStatusCode());
 
-    $BankController = new BankController($objectManager);
-    $this->assertEquals($array, $BankController->depositAction(1, 1000));
+    $client->insulate();
+    $client->restart();
   }
 
-  public function testWithdrawPost()
+   public function testWithdraw()
   {
-    $bank = new Bank();
-    $bank->setMoney(500);
-    $bank->setUser('QOO2');
-    $bankRepository = $this->createMock(ObjectRepository::class);
-    $bankRepository->expects($this->any())
-      ->method('find')
-      ->willReturn($bank);
+    $client = static::createClient();
+    $client->request('POST', '/bank/withdraw', ['id' => '2', 'withdrawMoney' => '50']);
 
-    $objectManager = $this->createMock(ObjectManager::class);
-    $objectManager->expects($this->any())
-      ->method('getRepository')
-      ->willReturn($bankRepository);
+    $this->assertEquals(200,$client->getResponse()->getStatusCode());
 
-    $array = ['QOO2', 500];
-    $BankController = new BankController($objectManager);
-    $this->assertEquals($array, $BankController->withdrawAction(1));
+    $client->insulate();
+    $client->restart();
   }
 }
