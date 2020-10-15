@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\OptimisticLockException;
 
+
 class BankController extends Controller
 {
 
@@ -26,6 +27,7 @@ class BankController extends Controller
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
         $entityManager = $this->getDoctrine()->getManager();
+        $redis = $this->container->get('snc_redis.default');
 
         $datetime = new \DateTime;
         $bankDetail = new BankDetail();
@@ -35,25 +37,54 @@ class BankController extends Controller
         $bankMoney = (int)$bank->getMoney();
         $bankUser = $bank->getUser();
         $bankuUser = $bank->getUser();
-        $version = $bank->getVersion();
         $totalMoney = $depositMoney + $bankMoney;
-        //樂觀鎖
-        try {
-            $entityManager->lock($bank, LockMode::OPTIMISTIC, $version);
 
-            $bank->setMoney($totalMoney);
-            $bankDetail->setUserName($bankUser);
-            $bankDetail->setNotes('存款');
-            $bankDetail->setCreatedTime($datetime);
-            $bankDetail->setModifyMoney($depositMoney);
-            $bankDetail->setOldMoney($bankMoney);
-            $bankDetail->setNewMoney($totalMoney);
 
-            $entityManager->persist($bankDetail);
-            $entityManager->flush();
-        } catch (OptimisticLockException  $e) {
-            echo "Sorry, but someone else has already changed this entity. Please apply the changes again!";
+        //insert redis
+        $id2 = $id - 1;      
+        //取出流水號
+        $num = $redis->get('num:User' . $id2);
+        if ($num == 0) {
+            $redis->set('num:User' . $id2, 1);
+            $num2 = $redis->get('num:User' . $id2);
+        } else {
+            $redis->incr('num:User' . $id2);
+            $num2 = $redis->get('num:User' . $id2);
         }
+        $detailid = 'detail:User' . $id2 . ':' . $num2;
+        
+        //紀錄餘額
+        $redis->lPush('User' . $id2, $totalMoney);
+        //紀錄筆數
+        $redis->hmset(
+            $detailid,
+            'num',
+            $num2,
+            'name',
+            'User' . $id2,
+            'note',
+            'deposit',
+            'modify_money',
+            $depositMoney,
+            'old_money_money',
+            $bankMoney,
+            'new_money',
+            $totalMoney
+        );
+        // var_dump($redis->HVALS($detailid));
+        // exit;
+
+        $bank->setMoney($totalMoney);
+        $bankDetail->setUserName($bankUser);
+        $bankDetail->setNotes('存款');
+        $bankDetail->setCreatedTime($datetime);
+        $bankDetail->setModifyMoney($depositMoney);
+        $bankDetail->setOldMoney($bankMoney);
+        $bankDetail->setNewMoney($totalMoney);
+
+        $entityManager->persist($bankDetail);
+        $entityManager->flush();
+
         $entityManager->clear();
         $data = [
             'bankuUser' => $bankuUser,
@@ -74,6 +105,8 @@ class BankController extends Controller
         $id = $request->get('id');
         $withdrawMoney = (int)$request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
+        $redis = $this->container->get('snc_redis.default');
+
 
         $bankDetail = new BankDetail();
         $datetime = new \DateTime;
@@ -83,26 +116,54 @@ class BankController extends Controller
         $bankMoney = (int)$bank->getMoney();
         $bankUser = $bank->getUser();
         $bankuUser = $bank->getUser();
-        $version = $bank->getVersion();
         $totalMoney = $bankMoney - $withdrawMoney;
-        //樂觀鎖
-        try {
 
-            $entityManager->lock($bank, LockMode::OPTIMISTIC, $version);
 
-            $bank->setMoney($totalMoney);
-            $bankDetail->setUserName($bankUser);
-            $bankDetail->setNotes('提款');
-            $bankDetail->setCreatedTime($datetime);
-            $bankDetail->setModifyMoney($withdrawMoney);
-            $bankDetail->setOldMoney($bankMoney);
-            $bankDetail->setNewMoney($totalMoney);
-
-            $entityManager->persist($bankDetail);
-            $entityManager->flush();
-        } catch (OptimisticLockException  $e) {
-            echo "Sorry, but someone else has already changed this entity. Please apply the changes again!";
+        //insert redis
+        $id2 = $id - 1;
+        //取出流水號
+        $num = $redis->get('num:User' . $id2);
+        if ($num == 0) {
+            $redis->set('num:User' . $id2, 1);
+            $num2 = $redis->get('num:User' . $id2);
+        } else {
+            $redis->incr('num:User' . $id2);
+            $num2 = $redis->get('num:User' . $id2);
         }
+        $detailid = 'detail:User' . $id2 . ':' . $num2;
+        
+        //紀錄餘額
+        $redis->lPush('User' . $id2, $totalMoney);
+        //紀錄筆數
+        $redis->hmset(
+            $detailid,
+            'num',
+            $num2,
+            'name',
+            'User' . $id2,
+            'note',
+            'withdraw',
+            'modify_money',
+            $withdrawMoney,
+            'old_money_money',
+            $bankMoney,
+            'new_money',
+            $totalMoney
+        );
+        // var_dump($redis->HVALS($detailid));
+        // exit;
+
+        $bank->setMoney($totalMoney);
+        $bankDetail->setUserName($bankUser);
+        $bankDetail->setNotes('提款');
+        $bankDetail->setCreatedTime($datetime);
+        $bankDetail->setModifyMoney($withdrawMoney);
+        $bankDetail->setOldMoney($bankMoney);
+        $bankDetail->setNewMoney($totalMoney);
+
+        $entityManager->persist($bankDetail);
+        $entityManager->flush();
+
         $entityManager->clear();
         $data = [
             'bankuUser' => $bankuUser,

@@ -28,12 +28,6 @@ class Bank
      */
     protected $money;
 
-    /** 
-     * @ORM\Version 
-     * @ORM\Column(type="integer") 
-     */
-    private $version;
-
     public function getMoney()
     {
         return $this->money;
@@ -52,16 +46,6 @@ class Bank
     public function setUser($user)
     {
         $this->user = $user;
-    }
-
-    public function setVersion($version)
-    {
-        $this->version = $version;
-    }
-
-    public function getVersion()
-    {
-        return $this->version;
     }
 
 }
