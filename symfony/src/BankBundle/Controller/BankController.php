@@ -25,23 +25,43 @@ class BankController extends Controller
     {
         //存款
         $id = $request->get('id');
+        $id2 = $id - 1;
         $depositMoney = $request->get('depositMoney');
         $entityManager = $this->getDoctrine()->getManager();
         $redis = $this->container->get('snc_redis.default');
 
         $datetime = new \DateTime;
-        $bankDetail = new BankDetail();
         $datetime = $datetime->format('Y-m-d H:i:s.u');
 
-        $bank = $entityManager->find('BankBundle:Bank', $id);
-        $bankMoney = (int)$bank->getMoney();
-        $bankUser = $bank->getUser();
-        $bankuUser = $bank->getUser();
-        $totalMoney = $depositMoney + $bankMoney;
+        //redis沒資料時先預載DB資料
+        if ($redis->keys('*') == null) {
+            //計算bank總筆數
+            $qb = $entityManager->createQueryBuilder();
+            $qb->select('count(account.user)');
+            $qb->from('BankBundle:Bank', 'account');
+            $count = $qb->getQuery()->getSingleScalarResult();
+            $count = (int)$count;
+            for ($i = 1; $i <= $count; $i++) {
+                //撈出bank資料
+                $entityManager = $this->getDoctrine()->getManager();
+                $bank = $entityManager->find('BankBundle:Bank', $i);
+                $bankUser = $bank->getUser();
+                $bankMoney = (int)$bank->getMoney();
+                //撈出來資料寫入redis
+                $id = $i - 1;
+                $redis->lPush('bank:User' . $id, $bankMoney);
+                // var_dump($test);
+            }
+        } else {
+        }
 
-
+        //計算存款後餘額
+        $bankUser = 'bank:User' . $id2;
+        $bankMoney = $redis->lrange($bankUser, 0, 0);
+        $balance = (int)$bankMoney[0];
+        $totalMoney = $balance + $depositMoney;
+        
         //insert redis
-        $id2 = $id - 1;      
         //取出流水號
         $num = $redis->get('num:User' . $id2);
         if ($num == 0) {
@@ -51,10 +71,11 @@ class BankController extends Controller
             $redis->incr('num:User' . $id2);
             $num2 = $redis->get('num:User' . $id2);
         }
+        $num2 = (int)$num2;
         $detailid = 'detail:User' . $id2 . ':' . $num2;
-        
+
         //紀錄餘額
-        $redis->lPush('User' . $id2, $totalMoney);
+        $redis->lPush('bank:User' . $id2, $totalMoney);
         //紀錄筆數
         $redis->hmset(
             $detailid,
@@ -67,27 +88,15 @@ class BankController extends Controller
             'modify_money',
             $depositMoney,
             'old_money_money',
-            $bankMoney,
+            $balance,
             'new_money',
-            $totalMoney
+            $totalMoney,
+            'datetime',
+            $datetime
         );
-        // var_dump($redis->HVALS($detailid));
-        // exit;
 
-        $bank->setMoney($totalMoney);
-        $bankDetail->setUserName($bankUser);
-        $bankDetail->setNotes('存款');
-        $bankDetail->setCreatedTime($datetime);
-        $bankDetail->setModifyMoney($depositMoney);
-        $bankDetail->setOldMoney($bankMoney);
-        $bankDetail->setNewMoney($totalMoney);
-
-        $entityManager->persist($bankDetail);
-        $entityManager->flush();
-
-        $entityManager->clear();
         $data = [
-            'bankuUser' => $bankuUser,
+            'bankuUser' => $bankUser,
             'depositMoney' => $depositMoney,
             'totalMoney' => $totalMoney,
             'datetime' => $datetime,
@@ -103,24 +112,43 @@ class BankController extends Controller
     {
         //提款
         $id = $request->get('id');
-        $withdrawMoney = (int)$request->get('withdrawMoney');
+        $id2 = $id - 1;
+        $withdrawMoney = $request->get('withdrawMoney');
         $entityManager = $this->getDoctrine()->getManager();
         $redis = $this->container->get('snc_redis.default');
 
-
-        $bankDetail = new BankDetail();
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
 
-        $bank = $entityManager->find('BankBundle:Bank', $id);
-        $bankMoney = (int)$bank->getMoney();
-        $bankUser = $bank->getUser();
-        $bankuUser = $bank->getUser();
-        $totalMoney = $bankMoney - $withdrawMoney;
+        //redis沒資料時先預載DB資料
+        if ($redis->keys('*') == null) {
+            //計算bank總筆數
+            $qb = $entityManager->createQueryBuilder();
+            $qb->select('count(account.user)');
+            $qb->from('BankBundle:Bank', 'account');
+            $count = $qb->getQuery()->getSingleScalarResult();
+            $count = (int)$count;
+            for ($i = 1; $i <= $count; $i++) {
+                //撈出bank資料
+                $entityManager = $this->getDoctrine()->getManager();
+                $bank = $entityManager->find('BankBundle:Bank', $i);
+                $bankUser = $bank->getUser();
+                $bankMoney = (int)$bank->getMoney();
+                //撈出來資料寫入redis
+                $id = $i - 1;
+                $redis->lPush('bank:User' . $id, $bankMoney);
+                // var_dump($test);
+            }
+        } else {
+        }
 
-
+        //計算存款後餘額
+        $bankUser = 'bank:User' . $id2;
+        $bankMoney = $redis->lrange($bankUser, 0, 0);
+        $balance = (int)$bankMoney[0];
+        $totalMoney = $balance - $withdrawMoney;
+        
         //insert redis
-        $id2 = $id - 1;
         //取出流水號
         $num = $redis->get('num:User' . $id2);
         if ($num == 0) {
@@ -130,10 +158,11 @@ class BankController extends Controller
             $redis->incr('num:User' . $id2);
             $num2 = $redis->get('num:User' . $id2);
         }
+        $num2 = (int)$num2;
         $detailid = 'detail:User' . $id2 . ':' . $num2;
-        
+
         //紀錄餘額
-        $redis->lPush('User' . $id2, $totalMoney);
+        $redis->lPush('bank:User' . $id2, $totalMoney);
         //紀錄筆數
         $redis->hmset(
             $detailid,
@@ -146,27 +175,15 @@ class BankController extends Controller
             'modify_money',
             $withdrawMoney,
             'old_money_money',
-            $bankMoney,
+            $balance,
             'new_money',
-            $totalMoney
+            $totalMoney,
+            'datetime',
+            $datetime
         );
-        // var_dump($redis->HVALS($detailid));
-        // exit;
 
-        $bank->setMoney($totalMoney);
-        $bankDetail->setUserName($bankUser);
-        $bankDetail->setNotes('提款');
-        $bankDetail->setCreatedTime($datetime);
-        $bankDetail->setModifyMoney($withdrawMoney);
-        $bankDetail->setOldMoney($bankMoney);
-        $bankDetail->setNewMoney($totalMoney);
-
-        $entityManager->persist($bankDetail);
-        $entityManager->flush();
-
-        $entityManager->clear();
         $data = [
-            'bankuUser' => $bankuUser,
+            'bankuUser' => $bankUser,
             'withdrawMoney' => $withdrawMoney,
             'totalMoney' => $totalMoney,
             'datetime' => $datetime,
