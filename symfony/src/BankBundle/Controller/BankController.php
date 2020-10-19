@@ -33,7 +33,7 @@ class BankController extends Controller
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
 
-        //redis沒資料時先預載DB資料
+        //redis沒資料時先預載DB資料,如果redis裡面有資料將不會執行
         if ($redis->keys('*') == null) {
             //計算bank總筆數
             $qb = $entityManager->createQueryBuilder();
@@ -50,31 +50,33 @@ class BankController extends Controller
                 $bankMoney = (int)$bank->getMoney();
                 //撈出來資料寫入redis
                 $id = $i - 1;
-                $redis->lPush('bank:User' . $id, $bankMoney);
+
+                $redis->lPush('account' . $id, $bankMoney);
+                $redis->set('modnumBank' . $id, 0);
             }
-        } 
+        }
 
         //計算存款後餘額
-        $bankUser = 'bank:User' . $id2;
+        $bankUser = 'account' . $id2;
         $bankMoney = $redis->lrange($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance + $depositMoney;
 
         //insert redis
-        //取出流水號
-        $num = $redis->get('num:User' . $id2);
+        //記錄一個帳號異動了幾次
+        $num = $redis->get('modNum' . $id2);
         if ($num == 0) {
-            $redis->set('num:User' . $id2, 1);
-            $num2 = $redis->get('num:User' . $id2);
+            $redis->set('modNum' . $id2, 1);
+            $num2 = $redis->get('modNum' . $id2);
         } else {
-            $redis->incr('num:User' . $id2);
-            $num2 = $redis->get('num:User' . $id2);
+            $redis->incr('modNum' . $id2);
+            $num2 = $redis->get('modNum' . $id2);
         }
         $num2 = (int)$num2;
         $detailid = 'detail:User' . $id2 . ':' . $num2;
 
-        //紀錄餘額
-        $redis->lPush('bank:User' . $id2, $totalMoney);
+        //更新餘額
+        $redis->lPush('account' . $id2, $totalMoney);
         //紀錄筆數
         $redis->hmset(
             $detailid,
@@ -136,31 +138,32 @@ class BankController extends Controller
                 $bankMoney = (int)$bank->getMoney();
                 //撈出來資料寫入redis
                 $id = $i - 1;
-                $redis->lPush('bank:User' . $id, $bankMoney);
+                $redis->lPush('account' . $id, $bankMoney);
+                $redis->set('modnumBank' . $id, 1);
             }
         }
 
         //計算存款後餘額
-        $bankUser = 'bank:User' . $id2;
+        $bankUser = 'account' . $id2;
         $bankMoney = $redis->lrange($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance - $withdrawMoney;
 
         //insert redis
-        //取出流水號
-        $num = $redis->get('num:User' . $id2);
+        //記錄一個帳號異動了幾次
+        $num = $redis->get('modNum' . $id2);
         if ($num == 0) {
-            $redis->set('num:User' . $id2, 1);
-            $num2 = $redis->get('num:User' . $id2);
+            $redis->set('modNum' . $id2, 1);
+            $num2 = $redis->get('modNum' . $id2);
         } else {
-            $redis->incr('num:User' . $id2);
-            $num2 = $redis->get('num:User' . $id2);
+            $redis->incr('modNum' . $id2);
+            $num2 = $redis->get('modNum' . $id2);
         }
         $num2 = (int)$num2;
         $detailid = 'detail:User' . $id2 . ':' . $num2;
 
         //紀錄餘額
-        $redis->lPush('bank:User' . $id2, $totalMoney);
+        $redis->lPush('account' . $id2, $totalMoney);
         //紀錄筆數
         $redis->hmset(
             $detailid,
