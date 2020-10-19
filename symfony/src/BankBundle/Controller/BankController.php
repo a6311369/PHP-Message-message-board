@@ -52,15 +52,14 @@ class BankController extends Controller
                 $id = $i - 1;
                 $redis->lPush('bank:User' . $id, $bankMoney);
             }
-        } else {
-        }
+        } 
 
         //計算存款後餘額
         $bankUser = 'bank:User' . $id2;
         $bankMoney = $redis->lrange($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance + $depositMoney;
-        
+
         //insert redis
         //取出流水號
         $num = $redis->get('num:User' . $id2);
@@ -101,7 +100,7 @@ class BankController extends Controller
             'totalMoney' => $totalMoney,
             'datetime' => $datetime,
         ];
-        
+
         return new Response(json_encode($data, true));
     }
 
@@ -139,7 +138,6 @@ class BankController extends Controller
                 $id = $i - 1;
                 $redis->lPush('bank:User' . $id, $bankMoney);
             }
-        } else {
         }
 
         //計算存款後餘額
@@ -147,7 +145,7 @@ class BankController extends Controller
         $bankMoney = $redis->lrange($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance - $withdrawMoney;
-        
+
         //insert redis
         //取出流水號
         $num = $redis->get('num:User' . $id2);
