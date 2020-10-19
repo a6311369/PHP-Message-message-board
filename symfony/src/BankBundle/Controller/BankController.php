@@ -13,7 +13,7 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\OptimisticLockException;
-
+use BankBundle\Controller\WriteToDbController;
 
 class BankController extends Controller
 {
@@ -41,6 +41,7 @@ class BankController extends Controller
             $qb->from('BankBundle:Bank', 'account');
             $count = $qb->getQuery()->getSingleScalarResult();
             $count = (int)$count;
+            $redis->set('countUser', $count);
             for ($i = 1; $i <= $count; $i++) {
                 //撈出bank資料
                 $entityManager = $this->getDoctrine()->getManager();
@@ -50,7 +51,6 @@ class BankController extends Controller
                 //撈出來資料寫入redis
                 $id = $i - 1;
                 $redis->lPush('bank:User' . $id, $bankMoney);
-                // var_dump($test);
             }
         } else {
         }
@@ -101,7 +101,7 @@ class BankController extends Controller
             'totalMoney' => $totalMoney,
             'datetime' => $datetime,
         ];
-
+        
         return new Response(json_encode($data, true));
     }
 
@@ -128,6 +128,7 @@ class BankController extends Controller
             $qb->from('BankBundle:Bank', 'account');
             $count = $qb->getQuery()->getSingleScalarResult();
             $count = (int)$count;
+            $redis->set('countUser', $count);
             for ($i = 1; $i <= $count; $i++) {
                 //撈出bank資料
                 $entityManager = $this->getDoctrine()->getManager();
@@ -137,7 +138,6 @@ class BankController extends Controller
                 //撈出來資料寫入redis
                 $id = $i - 1;
                 $redis->lPush('bank:User' . $id, $bankMoney);
-                // var_dump($test);
             }
         } else {
         }
