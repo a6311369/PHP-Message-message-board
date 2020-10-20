@@ -29,21 +29,23 @@ class WriteToDbController extends Controller
         $count = $redis->get('countUser');
         $count = (int)$count;
         //insert Bank
+        $idIndex = $count - 1;
         for ($i = 1; $i <= $count; $i++) {
-            $id2 = $i - 1;
-            $id = $i;
-            $bankUser = 'modNum' . $id2;
-            $num = $redis->get($bankUser);
-            $num = (int)$num;
+            // $id2 = $i - 1;
+            // $id = $i;
+            $id = $redis->LINDEX('id', $idIndex);
             $bank = $entityManager->find('BankBundle:Bank', $id);
-            $bankUser = 'accountUser' . $id2;
-            $bankMoney = $redis->lrange($bankUser, 0, 0);
+            $bankId = 'accountId' . $id;
+            $bankMoney = $redis->lrange($bankId, 0, 0);
             $balance = (int)$bankMoney[0];
             $bank->setMoney($balance);
             $entityManager->persist($bank);
             $entityManager->flush();
             $entityManager->clear();
+            $idIndex = $idIndex - 1;
+
         }
+        exit;
 
         //insert BankDetail
         $bankDetail = new BankDetail();
