@@ -50,14 +50,12 @@ class BankController extends Controller
                 $bankMoney = (int)$bank->getMoney();
                 //撈出來資料寫入redis
                 $id = $i - 1;
-
-                $redis->lPush('account' . $id, $bankMoney);
-                $redis->set('modnumBank' . $id, 0);
+                $redis->lPush('accountUser' . $id, $bankMoney);
             }
         }
 
         //計算存款後餘額
-        $bankUser = 'account' . $id2;
+        $bankUser = 'accountUser' . $id2;
         $bankMoney = $redis->lrange($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance + $depositMoney;
@@ -73,31 +71,22 @@ class BankController extends Controller
             $num2 = $redis->get('modNum' . $id2);
         }
         $num2 = (int)$num2;
-        $detailid = 'detail:User' . $id2 . ':' . $num2;
 
         //更新餘額
-        $redis->lPush('account' . $id2, $totalMoney);
+        $redis->lPush('accountUser' . $id2, $totalMoney);
         //紀錄筆數
-        $redis->hmset(
-            $detailid,
-            'num',
-            $num2,
-            'name',
-            'User' . $id2,
-            'note',
-            'deposit',
-            'modify_money',
-            $depositMoney,
-            'old_money_money',
-            $balance,
-            'new_money',
-            $totalMoney,
-            'datetime',
-            $datetime
-        );
+        //list版本
+        $user = 'User' . $id2;
+        $redis->lPush('detailNum:User' . $id2, $num2);
+        $redis->lPush('detailNotes:User' . $id2, 'deposit');
+        $redis->lPush('detailName:User' . $id2, $user);
+        $redis->lPush('detailModmoney:User' . $id2, $depositMoney);
+        $redis->lPush('detailOldmoney:User' . $id2, $balance);
+        $redis->lPush('detailNewmoney:User' . $id2, $totalMoney);
+        $redis->lPush('detaildate:User' . $id2, $datetime);
 
         $data = [
-            'bankuUser' => $bankUser,
+            'bankuUser' => $user,
             'depositMoney' => $depositMoney,
             'totalMoney' => $totalMoney,
             'datetime' => $datetime,
@@ -138,13 +127,12 @@ class BankController extends Controller
                 $bankMoney = (int)$bank->getMoney();
                 //撈出來資料寫入redis
                 $id = $i - 1;
-                $redis->lPush('account' . $id, $bankMoney);
-                $redis->set('modnumBank' . $id, 1);
+                $redis->lPush('accountUser' . $id, $bankMoney);
             }
         }
 
         //計算存款後餘額
-        $bankUser = 'account' . $id2;
+        $bankUser = 'accountUser' . $id2;
         $bankMoney = $redis->lrange($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance - $withdrawMoney;
@@ -160,31 +148,22 @@ class BankController extends Controller
             $num2 = $redis->get('modNum' . $id2);
         }
         $num2 = (int)$num2;
-        $detailid = 'detail:User' . $id2 . ':' . $num2;
 
         //紀錄餘額
-        $redis->lPush('account' . $id2, $totalMoney);
+        $redis->lPush('accountUser' . $id2, $totalMoney);
         //紀錄筆數
-        $redis->hmset(
-            $detailid,
-            'num',
-            $num2,
-            'name',
-            'User' . $id2,
-            'note',
-            'withdraw',
-            'modify_money',
-            $withdrawMoney,
-            'old_money_money',
-            $balance,
-            'new_money',
-            $totalMoney,
-            'datetime',
-            $datetime
-        );
+        //list版本
+        $user = 'User' . $id2;
+        $redis->lPush('detailNum:User' . $id2, $num2);
+        $redis->lPush('detailNotes:User' . $id2, 'withdraw');
+        $redis->lPush('detailName:User' . $id2, $user);
+        $redis->lPush('detailModmoney:User' . $id2, $withdrawMoney);
+        $redis->lPush('detailOldmoney:User' . $id2, $balance);
+        $redis->lPush('detailNewmoney:User' . $id2, $totalMoney);
+        $redis->lPush('detaildate:User' . $id2, $datetime);
 
         $data = [
-            'bankuUser' => $bankUser,
+            'bankuUser' => $user,
             'withdrawMoney' => $withdrawMoney,
             'totalMoney' => $totalMoney,
             'datetime' => $datetime,
