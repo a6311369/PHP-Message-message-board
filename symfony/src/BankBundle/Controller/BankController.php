@@ -101,8 +101,14 @@ class BankController extends Controller
         $bankMoney = $redis->GET($bankUser);
         $balance = (int)$bankMoney;
         $totalMoney = $balance - $withdrawMoney;
-        //更新餘額
-        $redis->SET($bankUser, $totalMoney);
+        if ($totalMoney < 0) {
+            echo '餘額不足，無法提款';
+            exit;
+        } else {
+            //更新餘額
+            $redis->SET($bankUser, $totalMoney);
+        }
+
 
         //insert redis
         //記錄一個帳號異動了幾次
