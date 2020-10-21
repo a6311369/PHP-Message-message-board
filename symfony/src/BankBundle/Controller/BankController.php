@@ -38,16 +38,16 @@ class BankController extends Controller
             $bankUser = $bank->getUser();
             $bankMoney = (int)$bank->getMoney();
             //撈出來資料寫入redis
-            $redis->LPUSH('accountId' . $id, $bankMoney);
+            $redis->SET('accountId' . $id, $bankMoney);
             $redis->LPUSH('id', $id);
         }
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
-        $bankMoney = $redis->LRANGE($bankUser, 0, 0);
-        $balance = (int)$bankMoney[0];
+        $bankMoney = $redis->GET($bankUser);
+        $balance = (int)$bankMoney;
         $totalMoney = $balance + $depositMoney;
         //更新餘額
-        $redis->LPUSH('accountId' . $id, $totalMoney);
+        $redis->SET($bankUser, $totalMoney);
 
         //記錄一個帳號異動了幾次
         $num = $redis->GET('detailNum:Id:' . $id);
@@ -93,16 +93,16 @@ class BankController extends Controller
             $bankUser = $bank->getUser();
             $bankMoney = (int)$bank->getMoney();
             //撈出來資料寫入redis
-            $redis->LPUSH('accountId' . $id, $bankMoney);
+            $redis->SET('accountId' . $id, $bankMoney);
             $redis->LPUSH('id', $id);
         }
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
-        $bankMoney = $redis->LRANGE($bankUser, 0, 0);
-        $balance = (int)$bankMoney[0];
+        $bankMoney = $redis->GET($bankUser);
+        $balance = (int)$bankMoney;
         $totalMoney = $balance - $withdrawMoney;
         //更新餘額
-        $redis->LPUSH('accountId' . $id, $totalMoney);
+        $redis->SET($bankUser, $totalMoney);
 
         //insert redis
         //記錄一個帳號異動了幾次
@@ -121,7 +121,7 @@ class BankController extends Controller
 
         $data = [
             'bankId' => $id,
-            'depositMoney' => $withdrawMoney,
+            'withdrawMoney' => $withdrawMoney,
             'totalMoney' => $totalMoney,
             'datetime' => $datetime,
         ];

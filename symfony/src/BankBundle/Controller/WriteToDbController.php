@@ -32,8 +32,8 @@ class WriteToDbController extends Controller
             $id = $redis->LINDEX('id', $i);
             $bank = $entityManager->find('BankBundle:Bank', $id);
             $bankId = 'accountId' . $id;
-            $bankMoney = $redis->LRANGE($bankId, 0, 0);
-            $balance = (int)$bankMoney[0];
+            $bankMoney = $redis->GET($bankId);
+            $balance = (int)$bankMoney;
             $bank->setMoney($balance);
             $entityManager->persist($bank);
             $entityManager->flush();
