@@ -26,47 +26,40 @@ class WriteToDbController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $redis = $this->container->get('snc_redis.default');
 
-        $count = $redis->get('countUser');
+        $count = $redis->LLEN('id');
         $count = (int)$count;
-        //insert Bank
-        $idIndex = $count - 1;
-        for ($i = 1; $i <= $count; $i++) {
-            // $id2 = $i - 1;
-            // $id = $i;
-            $id = $redis->LINDEX('id', $idIndex);
+        for ($i = 0; $i < $count; $i++) {
+            $id = $redis->LINDEX('id', $i);
             $bank = $entityManager->find('BankBundle:Bank', $id);
             $bankId = 'accountId' . $id;
-            $bankMoney = $redis->lrange($bankId, 0, 0);
+            $bankMoney = $redis->LRANGE($bankId, 0, 0);
             $balance = (int)$bankMoney[0];
             $bank->setMoney($balance);
             $entityManager->persist($bank);
             $entityManager->flush();
             $entityManager->clear();
-            $idIndex = $idIndex - 1;
-
         }
-        exit;
 
         //insert BankDetail
         $bankDetail = new BankDetail();
-        for ($j = 1; $j <= $count; $j++) {
-            $id2 = $j - 1;
-            $detaiUser = 'detailNum:User' . $id2;
-            $detailNum = $redis->llen($detaiUser);
+        for ($j = 0; $j < $count; $j++) {
+            $id = $redis->LINDEX('id', $j);
+            $detaiUser = 'detailNum:Id:' . $id;
+            $detailNum = $redis->GET($detaiUser);
             $detailNum = (int)$detailNum;
             if ($detailNum != 0) {
                 for ($k = 1; $k <= $detailNum; $k++) {
                     //redis取值
-                    $redis->rpop('detailNum:User' . $id2);
-                    $detailNotes = $redis->rpop('detailNotes:User' . $id2);
-                    $detailName = $redis->rpop('detailName:User' . $id2);
-                    $detailModmoney = $redis->rpop('detailModmoney:User' . $id2);
-                    $detailOldmoney = $redis->rpop('detailOldmoney:User' . $id2);
-                    $detailNewmoney = $redis->rpop('detailNewmoney:User' . $id2);
-                    $detaildate = $redis->rpop('detaildate:User' . $id2);
+                    $detailNotes = $redis->rpop('detailNotes:Id:' . $id);
+                    $detailModmoney = $redis->rpop('detailModmoney:Id:' . $id);
+                    $detailOldmoney = $redis->rpop('detailOldmoney:Id:' . $id);
+                    $detailNewmoney = $redis->rpop('detailNewmoney:Id:' . $id);
+                    $detaildate = $redis->rpop('detaildate:Id:' . $id);
+                    // var_dump($id);exit;
+
                     //寫入DB
                     $bankDetail->setNotes($detailNotes);
-                    $bankDetail->setUserName($detailName);
+                    $bankDetail->setUserId($id);
                     $bankDetail->setModifyMoney($detailModmoney);
                     $bankDetail->setOldMoney($detailOldmoney);
                     $bankDetail->setNewMoney($detailNewmoney);
@@ -76,6 +69,8 @@ class WriteToDbController extends Controller
                     $entityManager->flush();
                     $entityManager->clear();
                 }
+                $redis->DEL($detaiUser);
+                $redis->DEL('detailID:' . $id);
             }
         }
 

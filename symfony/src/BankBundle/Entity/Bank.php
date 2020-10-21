@@ -27,10 +27,7 @@ class Bank
      * @ORM\Column(type="integer")
      */
     protected $money;
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    protected $active;
+
 
     public function getId()
     {
@@ -56,15 +53,4 @@ class Bank
     {
         $this->user = $user;
     }
-
-    public function getActive()
-    {
-        return $this->active;
-    }
-
-    public function setActive($active)
-    {
-        $this->active = $active;
-    }
-
 }

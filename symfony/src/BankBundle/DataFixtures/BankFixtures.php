@@ -16,7 +16,6 @@ class BankFixtures extends Fixture
             $bank = new Bank();
             $bank->setMoney(500000);
             $bank->setUser('User' . $i);
-            $bank->setActive('Y');
             $manager->persist($bank);
         }
         // for ($i = 0; $i < 3; $i++) {

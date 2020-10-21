@@ -25,7 +25,7 @@ class BankDetail
     /**
      * @ORM\Column(type="string", length=100)
      */
-    protected $userName;
+    protected $userId;
     /**
      * @ORM\Column(type="integer")
      */
@@ -44,14 +44,14 @@ class BankDetail
     */
     protected $createdTime;
 
-    public function getUserName()
+    public function getUserId()
     {
-        return $this->userName;
+        return $this->userId;
     }
 
-    public function setUserName($userName)
+    public function setUserId($userId)
     {
-        $this->userName = $userName;
+        $this->userId = $userId;
     }
 
     public function getNotes()

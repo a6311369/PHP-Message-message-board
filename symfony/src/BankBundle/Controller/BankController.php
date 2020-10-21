@@ -31,63 +31,37 @@ class BankController extends Controller
 
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
-
-        //redis沒資料時先預載DB資料,如果redis裡面有資料將不會執行
-        if ($redis->keys('accountId*') == null) {
-            //計算bank有效總筆數
-            $qb = $entityManager->createQueryBuilder();
-            $qb->select('count(account.user)');
-            $qb->from('BankBundle:Bank', 'account');
-            $qb->where('account.active = :Y')->setParameter('Y', 'Y');
-            $count = $qb->getQuery()->getSingleScalarResult();
-            $count = (int)$count;
-            $redis->set('countUser', $count);
-            //撈出有效帳號的id
-            $query = $entityManager->createQuery('SELECT u.id FROM BankBundle:Bank u WHERE u.active = ?1');
-            $query->setParameter(1, 'Y');
-            $users = $query->getResult();
-            foreach ($users as $id) {
-                $redis->lPush('id', $id);
-            }
-            $idIndex = $count - 1;
-            for ($i = 1; $i <= $count; $i++) {
-                //撈出bank資料
-                $id = $redis->LINDEX('id', $idIndex);
-                $entityManager = $this->getDoctrine()->getManager();
-                $bank = $entityManager->find('BankBundle:Bank', $id);
-                $bankUser = $bank->getUser();
-                $bankMoney = (int)$bank->getMoney();
-                $idIndex = $idIndex - 1;
-                //撈出來資料寫入redis
-                $redis->lPush('accountId' . $id, $bankMoney);
-            }
+        //判斷是否存在redis
+        if ($redis->KEYS('accountId' . $id) == null) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $bank = $entityManager->find('BankBundle:Bank', $id);
+            $bankUser = $bank->getUser();
+            $bankMoney = (int)$bank->getMoney();
+            //撈出來資料寫入redis
+            $redis->LPUSH('accountId' . $id, $bankMoney);
+            $redis->LPUSH('id', $id);
         }
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
-        $bankMoney = $redis->lrange($bankUser, 0, 0);
+        $bankMoney = $redis->LRANGE($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance + $depositMoney;
         //更新餘額
-        $redis->lPush('accountId' . $id, $totalMoney);
+        $redis->LPUSH('accountId' . $id, $totalMoney);
 
-        //insert redis
         //記錄一個帳號異動了幾次
-        $num = $redis->get('modid' . $id);
+        $num = $redis->GET('detailNum:Id:' . $id);
         if ($num == 0) {
-            $redis->set('modid' . $id, 1);
-            $num2 = $redis->get('modid' . $id);
+            $redis->SET('detailNum:Id:' . $id, 1);
         } else {
-            $redis->incr('modid' . $id);
-            $num2 = $redis->get('modid' . $id);
+            $redis->INCR('detailNum:Id:' . $id);
         }
-        $num2 = (int)$num2;
-        $redis->lPush('detailNum:Id:' . $id, $num2);
-        $redis->lPush('detailNotes:id:' . $id, 'deposit');
-        $redis->set('detailID:' . $id, $id);
-        $redis->lPush('detailModmoney:Id:' . $id, $depositMoney);
-        $redis->lPush('detailOldmoney:Id:' . $id, $balance);
-        $redis->lPush('detailNewmoney:Id:' . $id, $totalMoney);
-        $redis->lPush('detaildate:Id:' . $id, $datetime);
+        $redis->LPUSH('detailNotes:Id:' . $id, 'deposit');
+        $redis->SET('detailID:' . $id, $id);
+        $redis->LPUSH('detailModmoney:Id:' . $id, $depositMoney);
+        $redis->LPUSH('detailOldmoney:Id:' . $id, $balance);
+        $redis->LPUSH('detailNewmoney:Id:' . $id, $totalMoney);
+        $redis->LPUSH('detaildate:Id:' . $id, $datetime);
 
         $data = [
             'bankId' => $id,
@@ -112,63 +86,38 @@ class BankController extends Controller
 
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
-
-        //redis沒資料時先預載DB資料,如果redis裡面有資料將不會執行
-        if ($redis->keys('accountId*') == null) {
-            //計算bank有效總筆數
-            $qb = $entityManager->createQueryBuilder();
-            $qb->select('count(account.user)');
-            $qb->from('BankBundle:Bank', 'account');
-            $qb->where('account.active = :Y')->setParameter('Y', 'Y');
-            $count = $qb->getQuery()->getSingleScalarResult();
-            $count = (int)$count;
-            $redis->set('countUser', $count);
-            //撈出有效帳號的id
-            $query = $entityManager->createQuery('SELECT u.id FROM BankBundle:Bank u WHERE u.active = ?1');
-            $query->setParameter(1, 'Y');
-            $users = $query->getResult();
-            foreach ($users as $id) {
-                $redis->lPush('id', $id);
-            }
-            $idIndex = $count - 1;
-            for ($i = 1; $i <= $count; $i++) {
-                //撈出bank資料
-                $id = $redis->LINDEX('id', $idIndex);
-                $entityManager = $this->getDoctrine()->getManager();
-                $bank = $entityManager->find('BankBundle:Bank', $id);
-                $bankUser = $bank->getUser();
-                $bankMoney = (int)$bank->getMoney();
-                $idIndex = $idIndex - 1;
-                //撈出來資料寫入redis
-                $redis->lPush('accountId' . $id, $bankMoney);
-            }
+        //判斷是否存在redis
+        if ($redis->KEYS('accountId' . $id) == null) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $bank = $entityManager->find('BankBundle:Bank', $id);
+            $bankUser = $bank->getUser();
+            $bankMoney = (int)$bank->getMoney();
+            //撈出來資料寫入redis
+            $redis->LPUSH('accountId' . $id, $bankMoney);
+            $redis->LPUSH('id', $id);
         }
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
-        $bankMoney = $redis->lrange($bankUser, 0, 0);
+        $bankMoney = $redis->LRANGE($bankUser, 0, 0);
         $balance = (int)$bankMoney[0];
         $totalMoney = $balance - $withdrawMoney;
         //更新餘額
-        $redis->lPush('accountId' . $id, $totalMoney);
+        $redis->LPUSH('accountId' . $id, $totalMoney);
 
         //insert redis
         //記錄一個帳號異動了幾次
-        $num = $redis->get('modid' . $id);
+        $num = $redis->GET('detailNum:Id:' . $id);
         if ($num == 0) {
-            $redis->set('modid' . $id, 1);
-            $num2 = $redis->get('modid' . $id);
+            $redis->SET('detailNum:Id:' . $id, 1);
         } else {
-            $redis->incr('modid' . $id);
-            $num2 = $redis->get('modid' . $id);
+            $redis->INCR('detailNum:Id:' . $id);
         }
-        $num2 = (int)$num2;
-        $redis->lPush('detailNum:Id:' . $id, $num2);
-        $redis->lPush('detailNotes:id:' . $id, 'withdrawMoney');
-        $redis->set('detailID:' . $id, $id);
-        $redis->lPush('detailModmoney:Id:' . $id, $withdrawMoney);
-        $redis->lPush('detailOldmoney:Id:' . $id, $balance);
-        $redis->lPush('detailNewmoney:Id:' . $id, $totalMoney);
-        $redis->lPush('detaildate:Id:' . $id, $datetime);
+        $redis->LPUSH('detailNotes:Id:' . $id, 'withdrawMoney');
+        $redis->SET('detailID:' . $id, $id);
+        $redis->LPUSH('detailModmoney:Id:' . $id, $withdrawMoney);
+        $redis->LPUSH('detailOldmoney:Id:' . $id, $balance);
+        $redis->LPUSH('detailNewmoney:Id:' . $id, $totalMoney);
+        $redis->LPUSH('detaildate:Id:' . $id, $datetime);
 
         $data = [
             'bankId' => $id,
