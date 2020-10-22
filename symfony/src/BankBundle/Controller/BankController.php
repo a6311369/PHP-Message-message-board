@@ -14,6 +14,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\OptimisticLockException;
 use BankBundle\Controller\WriteToDbController;
+use BankBundle\Service\RedisClient;
+
+
 
 class BankController extends Controller
 {
@@ -26,21 +29,12 @@ class BankController extends Controller
         //存款
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
-        $entityManager = $this->getDoctrine()->getManager();
         $redis = $this->container->get('snc_redis.default');
 
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
         //判斷是否存在redis
-        if ($redis->KEYS('accountId' . $id) == null) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $bank = $entityManager->find('BankBundle:Bank', $id);
-            $bankUser = $bank->getUser();
-            $bankMoney = (int)$bank->getMoney();
-            //撈出來資料寫入redis
-            $redis->SET('accountId' . $id, $bankMoney);
-            $redis->LPUSH('id', $id);
-        }
+        $this->writeAccountData($id);
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
         $bankMoney = $redis->GET($bankUser);
@@ -81,21 +75,13 @@ class BankController extends Controller
         //提款
         $id = $request->get('id');
         $withdrawMoney = $request->get('withdrawMoney');
-        $entityManager = $this->getDoctrine()->getManager();
         $redis = $this->container->get('snc_redis.default');
 
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
         //判斷是否存在redis
-        if ($redis->KEYS('accountId' . $id) == null) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $bank = $entityManager->find('BankBundle:Bank', $id);
-            $bankUser = $bank->getUser();
-            $bankMoney = (int)$bank->getMoney();
-            //撈出來資料寫入redis
-            $redis->SET('accountId' . $id, $bankMoney);
-            $redis->LPUSH('id', $id);
-        }
+        $this->writeAccountData($id);
+
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
         $bankMoney = $redis->GET($bankUser);
@@ -132,5 +118,18 @@ class BankController extends Controller
         ];
 
         return new Response(json_encode($data, true));
+    }
+    private function writeAccountData($id)
+    {
+        $redis = $this->container->get('snc_redis.default');
+        if ($redis->KEYS('accountId' . $id) == null) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $bank = $entityManager->find('BankBundle:Bank', $id);
+            $bankUser = $bank->getUser();
+            $bankMoney = (int)$bank->getMoney();
+            //撈出來資料寫入redis
+            $redis->SET('accountId' . $id, $bankMoney);
+            $redis->LPUSH('id', $id);
+        }
     }
 }

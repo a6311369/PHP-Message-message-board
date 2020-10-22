@@ -20,7 +20,7 @@ class WriteToDbCommand extends ContainerAwareCommand
     {
         $this
             ->setDescription('Redis Write To DB.')
-            ->setHelp('This command allows you to Redis Write To DB');
+            ->setHelp('This command auto Write To DB');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -75,6 +75,5 @@ class WriteToDbCommand extends ContainerAwareCommand
                 $redis->DEL('detailID:' . $id);
             }
         }
-        // $output->writeln('Redis Write To DB Finsh.');
     }
 }

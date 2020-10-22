@@ -36,3 +36,10 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    # apps.redis_client:
+    #     public : true
+    #     autowire: true
+    #     class: BankBundle\Service\RedisClient
+    #     arguments: ['@snc_redis.default']`
+
+    # Redis: '@snc_redis.default'
