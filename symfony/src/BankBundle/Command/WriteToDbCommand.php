@@ -1,32 +1,34 @@
 <?php
 
-namespace BankBundle\Controller;
+namespace BankBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use BankBundle\Entity\Bank;
 use BankBundle\Entity\BankDetail;
-use Doctrine\Persistence\ObjectManager;
-use Doctrine\ORM\Tools\SchemaTool;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Doctrine\DBAL\LockMode;
-use Doctrine\ORM\OptimisticLockException;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 
-class WriteToDbController extends Controller
+
+class WriteToDbCommand extends ContainerAwareCommand
 {
+    // the name of the command (the part after "bin/console")
+    protected static $defaultName = 'app:writetodb';
 
-    /**
-     * @Route("/writetodb/writetodb", name="writetodb"))
-     */
-    public function writeToDbAction()
+    protected function configure()
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $redis = $this->container->get('snc_redis.default');
+        $this
+            ->setDescription('Redis Write To DB.')
+            ->setHelp('This command allows you to Redis Write To DB');
+    }
 
-        //insert Bank
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $redis = $this->getContainer()->get('snc_redis.default');
+        $doctrine = $this->getContainer()->get('doctrine');
+        $entityManager = $doctrine->getManager();
+
         $count = $redis->LLEN('id');
         $count = (int)$count;
         for ($i = 0; $i < $count; $i++) {
@@ -74,6 +76,6 @@ class WriteToDbController extends Controller
             }
         }
 
-        return new Response('Write is finish');
+        $output->writeln('Redis Write To DB Finsh.');
     }
 }

@@ -109,7 +109,6 @@ class BankController extends Controller
             $redis->SET($bankUser, $totalMoney);
         }
 
-
         //insert redis
         //記錄一個帳號異動了幾次
         $num = $redis->GET('detailNum:Id:' . $id);
