@@ -75,7 +75,6 @@ class WriteToDbCommand extends ContainerAwareCommand
                 $redis->DEL('detailID:' . $id);
             }
         }
-
-        $output->writeln('Redis Write To DB Finsh.');
+        // $output->writeln('Redis Write To DB Finsh.');
     }
 }
