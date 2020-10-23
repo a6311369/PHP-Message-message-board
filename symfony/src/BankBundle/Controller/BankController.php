@@ -29,12 +29,10 @@ class BankController extends Controller
         //存款
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
-        $redis = $this->container->get('snc_redis.default');
-
+        // $redis = $this->container->get('snc_redis.default');
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
         $redisService = new RedisClient();
-
         //判斷是否存在redis
         $this->writeAccountData($id);
         //計算存款後餘額
@@ -46,13 +44,9 @@ class BankController extends Controller
         $redisService->setTotalMoney($bankUser, $totalMoney);
         //記錄一個帳號異動了幾次
         $redisService->countModNum($id);
-        $redis->LPUSH('detailNotes:Id:' . $id, 'deposit');
-        $redis->SET('detailID:' . $id, $id);
-        $redis->LPUSH('detailModmoney:Id:' . $id, $depositMoney);
-        $redis->LPUSH('detailOldmoney:Id:' . $id, $balance);
-        $redis->LPUSH('detailNewmoney:Id:' . $id, $totalMoney);
-        $redis->LPUSH('detaildate:Id:' . $id, $datetime);
-
+        //紀錄明細
+        $notes = 'deposit';
+        $redisService->writeDetail($id,$notes,$depositMoney,$balance,$totalMoney,$datetime);
         $data = [
             'bankId' => $id,
             'depositMoney' => $depositMoney,
@@ -71,16 +65,15 @@ class BankController extends Controller
         //提款
         $id = $request->get('id');
         $withdrawMoney = $request->get('withdrawMoney');
-        $redis = $this->container->get('snc_redis.default');
-
+        // $redis = $this->container->get('snc_redis.default');
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
+        $redisService = new RedisClient();
         //判斷是否存在redis
         $this->writeAccountData($id);
-
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
-        $bankMoney = $redis->GET($bankUser);
+        $bankMoney = $redisService->getBankMoney($bankUser);
         $balance = (int)$bankMoney;
         $totalMoney = $balance - $withdrawMoney;
         if ($totalMoney < 0) {
@@ -88,23 +81,13 @@ class BankController extends Controller
             exit;
         } else {
             //更新餘額
-            $redis->SET($bankUser, $totalMoney);
+            $redisService->setTotalMoney($bankUser, $totalMoney);
         }
-
-        //insert redis
         //記錄一個帳號異動了幾次
-        $num = $redis->GET('detailNum:Id:' . $id);
-        if ($num == 0) {
-            $redis->SET('detailNum:Id:' . $id, 1);
-        } else {
-            $redis->INCR('detailNum:Id:' . $id);
-        }
-        $redis->LPUSH('detailNotes:Id:' . $id, 'withdrawMoney');
-        $redis->SET('detailID:' . $id, $id);
-        $redis->LPUSH('detailModmoney:Id:' . $id, $withdrawMoney);
-        $redis->LPUSH('detailOldmoney:Id:' . $id, $balance);
-        $redis->LPUSH('detailNewmoney:Id:' . $id, $totalMoney);
-        $redis->LPUSH('detaildate:Id:' . $id, $datetime);
+        $redisService->countModNum($id);
+        //紀錄明細
+        $notes = 'withdrawMoney';
+        $redisService->writeDetail($id,$notes,$withdrawMoney,$balance,$totalMoney,$datetime);       
         $data = [
             'bankId' => $id,
             'withdrawMoney' => $withdrawMoney,
@@ -114,6 +97,7 @@ class BankController extends Controller
 
         return new Response(json_encode($data, true));
     }
+    //判斷AccountId
     private function writeAccountData($id)
     {
         $redisService = new RedisClient();

@@ -63,4 +63,15 @@ class RedisClient
       $redis->INCR('detailNum:Id:' . $id);
     }
   }
+
+  public function writeDetail($id,$notes,$depositMoney,$balance,$totalMoney,$datetime)
+  {
+    $redis = $this->client;
+    $redis->LPUSH('detailNotes:Id:' . $id, $notes);
+    $redis->SET('detailID:' . $id, $id);
+    $redis->LPUSH('detailModmoney:Id:' . $id, $depositMoney);
+    $redis->LPUSH('detailOldmoney:Id:' . $id, $balance);
+    $redis->LPUSH('detailNewmoney:Id:' . $id, $totalMoney);
+    $redis->LPUSH('detaildate:Id:' . $id, $datetime);
+  }
 }
