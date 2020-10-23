@@ -75,3 +75,12 @@ Enjoy!
 [13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
 [14]: https://symfony.com/doc/current/setup/built_in_web_server.html
 [15]: https://symfony.com/doc/current/setup.html
+
+### TODO 疑問集
+1. 目前是找不到 container
+```text
+   rediClient.php 跟之前不一樣了 ，那你要怎麼連線到ｒｅｄｉ
+   $this->container->get('snc_redis.default'); 這是我連線的方式
+SncRedisBundle?? 我得查看下相關資料，我是直接用 predis
+
+```

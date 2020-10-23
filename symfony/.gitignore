@@ -18,3 +18,5 @@
 /src/BankBundle/Resources/
 /phpunit.sh
 /report/
+/README.md
+/.gitignore

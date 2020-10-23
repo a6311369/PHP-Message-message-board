@@ -2,16 +2,26 @@
 
 namespace BankBundle\Service;
 
-use Redis ;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class RedisClient extends Controller
 {
-    public function __construct(Redis $sncRedisDefault)
+
+    private $redis;
+
+    public function __construct()
     {
-        $this->client    = $sncRedisDefault;
+        $redis = $this->container;
+        var_dump($redis);exit;
     }
-    
-    public function clientRedis(){
-            return $this->client;
+
+    public function getAccountId($keys)
+    {
+        // $redis = $this->container->get('snc_redis.default');
+        $AccountId = $this->redis->GET($keys);
+        // $AccountId = $redis->GET($keys);
+        // $AccountId = $keys;
+        var_dump($AccountId);
+        return $AccountId;
     }
 }

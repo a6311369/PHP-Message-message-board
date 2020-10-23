@@ -33,6 +33,7 @@ class BankController extends Controller
 
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
+        
         //判斷是否存在redis
         $this->writeAccountData($id);
         //計算存款後餘額
@@ -121,6 +122,14 @@ class BankController extends Controller
     }
     private function writeAccountData($id)
     {
+        $redis = new RedisClient();
+        $keys = 'accountId' . $id;
+        $accountId = $redis->getAccountId($keys);
+        // $redis = $this->container->get('snc_redis.default');
+        // $accountId = $redis->GET($keys);
+        var_dump($accountId);        
+        exit;
+
         $redis = $this->container->get('snc_redis.default');
         if ($redis->KEYS('accountId' . $id) == null) {
             $entityManager = $this->getDoctrine()->getManager();
