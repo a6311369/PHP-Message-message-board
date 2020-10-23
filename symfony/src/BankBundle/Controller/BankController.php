@@ -33,24 +33,19 @@ class BankController extends Controller
 
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
-        
+        $redisService = new RedisClient();
+
         //判斷是否存在redis
         $this->writeAccountData($id);
         //計算存款後餘額
         $bankUser = 'accountId' . $id;
-        $bankMoney = $redis->GET($bankUser);
+        $bankMoney = $redisService->getBankMoney($bankUser);
         $balance = (int)$bankMoney;
         $totalMoney = $balance + $depositMoney;
         //更新餘額
-        $redis->SET($bankUser, $totalMoney);
-
+        $redisService->setTotalMoney($bankUser, $totalMoney);
         //記錄一個帳號異動了幾次
-        $num = $redis->GET('detailNum:Id:' . $id);
-        if ($num == 0) {
-            $redis->SET('detailNum:Id:' . $id, 1);
-        } else {
-            $redis->INCR('detailNum:Id:' . $id);
-        }
+        $redisService->countModNum($id);
         $redis->LPUSH('detailNotes:Id:' . $id, 'deposit');
         $redis->SET('detailID:' . $id, $id);
         $redis->LPUSH('detailModmoney:Id:' . $id, $depositMoney);
@@ -110,7 +105,6 @@ class BankController extends Controller
         $redis->LPUSH('detailOldmoney:Id:' . $id, $balance);
         $redis->LPUSH('detailNewmoney:Id:' . $id, $totalMoney);
         $redis->LPUSH('detaildate:Id:' . $id, $datetime);
-
         $data = [
             'bankId' => $id,
             'withdrawMoney' => $withdrawMoney,
@@ -122,23 +116,13 @@ class BankController extends Controller
     }
     private function writeAccountData($id)
     {
-        $redis = new RedisClient();
-        $keys = 'accountId' . $id;
-        $accountId = $redis->getAccountId($keys);
-        // $redis = $this->container->get('snc_redis.default');
-        // $accountId = $redis->GET($keys);
-        var_dump($accountId);        
-        exit;
-
-        $redis = $this->container->get('snc_redis.default');
-        if ($redis->KEYS('accountId' . $id) == null) {
+        $redisService = new RedisClient();
+        $accountId = $redisService->getAccountId($id);
+        if ($accountId == true) {
             $entityManager = $this->getDoctrine()->getManager();
             $bank = $entityManager->find('BankBundle:Bank', $id);
-            $bankUser = $bank->getUser();
             $bankMoney = (int)$bank->getMoney();
-            //撈出來資料寫入redis
-            $redis->SET('accountId' . $id, $bankMoney);
-            $redis->LPUSH('id', $id);
+            $redisService->setBankMoney($id, $bankMoney);
         }
     }
 }
