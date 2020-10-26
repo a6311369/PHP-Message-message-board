@@ -15,6 +15,7 @@ use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\OptimisticLockException;
 use BankBundle\Controller\WriteToDbController;
 use BankBundle\Service\RedisClient;
+use Psr\Log\LoggerInterface;
 
 
 
@@ -45,7 +46,7 @@ class BankController extends Controller
         $redisService->countModNum($id);
         //交易明細
         $notes = 'deposit';
-        $redisService->writeDetail($id,$notes,$depositMoney,$balance,$totalMoney,$datetime);
+        $redisService->writeDetail($id, $notes, $depositMoney, $balance, $totalMoney, $datetime);
         $data = [
             'bankId' => $id,
             'depositMoney' => $depositMoney,
@@ -85,7 +86,7 @@ class BankController extends Controller
         $redisService->countModNum($id);
         //明細
         $notes = 'withdrawMoney';
-        $redisService->writeDetail($id,$notes,$withdrawMoney,$balance,$totalMoney,$datetime);       
+        $redisService->writeDetail($id, $notes, $withdrawMoney, $balance, $totalMoney, $datetime);
         $data = [
             'bankId' => $id,
             'withdrawMoney' => $withdrawMoney,

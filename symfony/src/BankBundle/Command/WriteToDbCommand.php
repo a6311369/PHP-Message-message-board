@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
 
 
 
@@ -15,6 +16,14 @@ class WriteToDbCommand extends ContainerAwareCommand
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:writetodb';
+
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -29,6 +38,12 @@ class WriteToDbCommand extends ContainerAwareCommand
         $doctrine = $this->getContainer()->get('doctrine');
         $entityManager = $doctrine->getManager();
 
+
+        //logger
+        $logger = $this->logger;
+        $logger->Info('WriteToDbCommand Logger Start');
+
+        //insert Bank
         $count = $redis->LLEN('id');
         $count = (int)$count;
         for ($i = 0; $i < $count; $i++) {
@@ -37,6 +52,8 @@ class WriteToDbCommand extends ContainerAwareCommand
             $bankId = 'accountId' . $id;
             $bankMoney = $redis->GET($bankId);
             $balance = (int)$bankMoney;
+            //logger
+            $logger->Info('accountId: ' . $id . ' ,Money: ' . $balance);
             $bank->setMoney($balance);
             $entityManager->persist($bank);
             $entityManager->flush();
@@ -59,6 +76,10 @@ class WriteToDbCommand extends ContainerAwareCommand
                     $detailNewmoney = $redis->rpop('detailNewmoney:Id:' . $id);
                     $detaildate = $redis->rpop('detaildate:Id:' . $id);
 
+                    //logger
+                    $logger->Info('Notes: ' . $detailNotes . ' ,UserId: ' . $id . ' ,ModifyMoney: ' . $detailModmoney . ' ,OldMoney: ' . $detailOldmoney .
+                        ' ,NewMoney: ' . $detailNewmoney . ' ,CreatedTime: ' . $detaildate);
+
                     //寫入DB
                     $bankDetail->setNotes($detailNotes);
                     $bankDetail->setUserId($id);
@@ -75,5 +96,6 @@ class WriteToDbCommand extends ContainerAwareCommand
                 $redis->DEL('detailID:' . $id);
             }
         }
+        $logger->Info('WriteToDbCommand Logger End');
     }
 }

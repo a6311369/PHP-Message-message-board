@@ -13,6 +13,8 @@ use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\OptimisticLockException;
+use Psr\Log\LoggerInterface;
+
 
 
 class WriteToDbController extends Controller
@@ -25,6 +27,9 @@ class WriteToDbController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
         $redis = $this->container->get('snc_redis.default');
+        //logger
+        $logger = $this->get('logger');
+        $logger->Info('WriteToDbCommand Logger Start');
 
         //insert Bank
         $count = $redis->LLEN('id');
@@ -35,6 +40,10 @@ class WriteToDbController extends Controller
             $bankId = 'accountId' . $id;
             $bankMoney = $redis->GET($bankId);
             $balance = (int)$bankMoney;
+
+            //logger
+            $logger->Info('accountId: ' . $id . ' ,Money: ' . $balance);
+
             $bank->setMoney($balance);
             $entityManager->persist($bank);
             $entityManager->flush();
@@ -56,6 +65,10 @@ class WriteToDbController extends Controller
                     $detailOldmoney = $redis->rpop('detailOldmoney:Id:' . $id);
                     $detailNewmoney = $redis->rpop('detailNewmoney:Id:' . $id);
                     $detaildate = $redis->rpop('detaildate:Id:' . $id);
+
+                    //logger
+                    $logger->Info('Notes: ' . $detailNotes . ' ,UserId: ' . $id . ' ,ModifyMoney: ' . $detailModmoney . ' ,OldMoney: ' . $detailOldmoney .
+                        ' ,NewMoney: ' . $detailNewmoney . ' ,CreatedTime: ' . $detaildate);
 
                     //寫入DB
                     $bankDetail->setNotes($detailNotes);
