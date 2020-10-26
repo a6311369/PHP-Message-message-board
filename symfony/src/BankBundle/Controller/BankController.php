@@ -29,7 +29,6 @@ class BankController extends Controller
         //存款
         $id = $request->get('id');
         $depositMoney = $request->get('depositMoney');
-        // $redis = $this->container->get('snc_redis.default');
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
         $redisService = new RedisClient();
@@ -44,7 +43,7 @@ class BankController extends Controller
         $redisService->setTotalMoney($bankUser, $totalMoney);
         //記錄一個帳號異動了幾次
         $redisService->countModNum($id);
-        //紀錄明細
+        //交易明細
         $notes = 'deposit';
         $redisService->writeDetail($id,$notes,$depositMoney,$balance,$totalMoney,$datetime);
         $data = [
@@ -65,7 +64,6 @@ class BankController extends Controller
         //提款
         $id = $request->get('id');
         $withdrawMoney = $request->get('withdrawMoney');
-        // $redis = $this->container->get('snc_redis.default');
         $datetime = new \DateTime;
         $datetime = $datetime->format('Y-m-d H:i:s.u');
         $redisService = new RedisClient();
@@ -85,7 +83,7 @@ class BankController extends Controller
         }
         //記錄一個帳號異動了幾次
         $redisService->countModNum($id);
-        //紀錄明細
+        //明細
         $notes = 'withdrawMoney';
         $redisService->writeDetail($id,$notes,$withdrawMoney,$balance,$totalMoney,$datetime);       
         $data = [
