@@ -19,7 +19,7 @@ class BankControllerTest extends WebTestCase
     public function testDeposit()
   {
         $client = static::createClient();
-        $client->request('POST', '/bank/deposit', ['id' =>'3', 'depositMoney' => '50']);
+        $client->request('POST', '/bank/deposit', ['id' =>'1', 'depositMoney' => '50']);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
@@ -30,11 +30,22 @@ class BankControllerTest extends WebTestCase
    public function testWithdraw()
   {
     $client = static::createClient();
-    $client->request('POST', '/bank/withdraw', ['id' => '3', 'withdrawMoney' => '50']);
+    $client->request('POST', '/bank/withdraw', ['id' => '2', 'withdrawMoney' => '50']);
 
     $this->assertEquals(200,$client->getResponse()->getStatusCode());
 
     $client->insulate();
     $client->restart();
   }
+  
+  // public function testWithdraw2()
+  // {
+  //   $client = static::createClient();
+  //   $client->request('POST', '/bank/withdraw', ['id' => '4', 'withdrawMoney' => '500000']);
+
+  //   $this->assertEquals(200,$client->getResponse()->getStatusCode());
+
+  //   $client->insulate();
+  //   $client->restart();
+  // }
 }

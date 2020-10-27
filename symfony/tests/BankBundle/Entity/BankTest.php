@@ -4,7 +4,11 @@
 namespace Tests\BankBundle\Entity;
 
 use BankBundle\Entity\Bank;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 use PHPUnit\Framework\TestCase;
+use BankBundle\Controller\BankController;
+
 
 class BankEntityTest extends TestCase
 {
@@ -31,13 +35,11 @@ class BankEntityTest extends TestCase
     }
 
     /**
-     * 測試function setUser
-     * 測試function getUser
+     * 測試function getId
      */
-    public function testVersion()
+    public function testgetIdr()
     {
         $bank = new Bank();
-        $bank->setVersion(1);
-        $this->assertEquals(1, $bank->getVersion());
+        $this->assertEquals(1, $bank->getId());
     }
 }

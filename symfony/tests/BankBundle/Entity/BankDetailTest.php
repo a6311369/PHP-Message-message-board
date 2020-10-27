@@ -15,8 +15,8 @@ class BankDetailEntityTest extends TestCase
     public function testGetUser_id()
     {
         $bankDetail = new BankDetail();
-        $bankDetail->setUserName('User0');
-        $this->assertEquals('User0', $bankDetail->getUserName());
+        $bankDetail->setUserID('1');
+        $this->assertEquals('1', $bankDetail->getUserID());
     }
 
     /**
