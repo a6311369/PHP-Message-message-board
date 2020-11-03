@@ -1,0 +1,47 @@
+version: '3'
+networks:
+  dev-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.10.0/24
+services:
+  mysql:
+    image: tuffylin/mysql:5.7.31
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - "/opt/tuffy_lin/docker/mysql_data:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=1Q2w3e4R
+    networks:
+      dev-net:
+        ipv4_address: 10.10.10.4
+    container_name: "mysql"
+  nginx:
+    build: .
+    restart: always
+    privileged: true
+    ports:
+      - 80:80
+      - 8080:8080
+      - 9000:9000
+    volumes:
+      - /opt/tuffy_lin/docker/conf/nginx_conf/conf.d:/etc/nginx/conf.d
+      - /opt/tuffy_lin:/opt/tuffy_lin
+      - /opt/tuffy_lin/docker/conf/php-fpm_conf/www.conf:/etc/opt/remi/php73/php-fpm.d/www.conf
+    networks:
+      dev-net:
+        ipv4_address: 10.10.10.3
+    container_name: "nginx-php7.3"
+  redis:
+    image: tuffylin/redis:3.2.12
+    ports:
+      - 6379:6379
+    volumes:
+      - /opt/tuffy_lin/docker/redis_data:/data
+    networks:
+      dev-net:
+        ipv4_address: 10.10.10.2
+    container_name: "redis"
