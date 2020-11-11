@@ -1,0 +1,88 @@
+---
+- hosts: ansible-client
+  tasks:
+  - name: yum update
+    action: yum name=* state=latest
+
+  - name: install git
+    yum:
+      name: git
+      state: latest
+
+  - name: Clone a repo with separate git directory
+    git:
+      repo: ssh://git@gitlab.infinity:10022/training/tuffy_lin.git
+      version: master
+      dest: /opt/tuffy_lin/
+      accept_hostkey: yes
+
+  - name: install utils
+    yum:
+      name: yum-utils
+      state: latest
+
+  - name: Add Docker repo
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docer-ce.repo
+
+  - name: Install Docker
+    yum:
+      name: docker-ce
+      state: latest
+
+  - name: Install docker-ce-cli
+    yum:
+      name: docker-ce-cli
+      state: latest
+
+  - name: Install containerd.io
+    yum:
+      name: containerd.io
+      state: latest
+
+  - name: Start Docker service
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Install docker-compose
+    yum:
+      name: docker-compose
+      state: latest
+
+  - name: copy daemon.json to remote
+    copy:
+      src: /etc/docker/daemon.json
+      dest: /etc/docker/
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: copy start-docker-compose.sh to remote
+    copy:
+      src: /opt/tuffy_lin/docker/1.start-docker-compose.sh
+      dest: /opt/tuffy_lin/docker/
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: restart service docker
+    systemd:
+      state: restarted
+      name: docker
+
+  - name: Install python-docker
+    yum:
+      name:
+        - python-docker
+      state: present
+  
+  - name: Pull an image
+    docker_image:
+      name: 192.168.56.105:5000/nginx
+      source: pull
+
+  - name: Run a script
+    shell: /opt/tuffy_lin/docker/1.start-docker-compose.sh

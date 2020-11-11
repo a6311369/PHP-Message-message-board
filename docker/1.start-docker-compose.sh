@@ -1,2 +1,2 @@
 #!/bin/bash
-docker-compose up -d
+docker-compose -f /opt/tuffy_lin/docker/docker-compose.yml up -d

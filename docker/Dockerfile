@@ -2,7 +2,8 @@ FROM centos:centos7.8.2003
 
 MAINTAINER Tuffy
 
-WORKDIR /data
+WORKDIR /opt
+ADD ./tuffy_lin/ .
 
 EXPOSE 80 443 9000
 

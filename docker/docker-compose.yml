@@ -8,7 +8,6 @@ networks:
 services:
   mysql:
     image: tuffylin/mysql:5.7.31
-    restart: always
     ports:
       - "3306:3306"
     volumes:
@@ -20,8 +19,7 @@ services:
         ipv4_address: 10.10.10.4
     container_name: "mysql"
   nginx:
-    build: .
-    restart: always
+    image: 192.168.56.105:5000/nginx
     privileged: true
     ports:
       - 80:80
@@ -29,7 +27,6 @@ services:
       - 9000:9000
     volumes:
       - /opt/tuffy_lin/docker/conf/nginx_conf/conf.d:/etc/nginx/conf.d
-      - /opt/tuffy_lin:/opt/tuffy_lin
       - /opt/tuffy_lin/docker/conf/php-fpm_conf/www.conf:/etc/opt/remi/php73/php-fpm.d/www.conf
     networks:
       dev-net:
