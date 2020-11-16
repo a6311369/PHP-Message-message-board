@@ -1,2 +1,4 @@
 doctrine/vendor/
 /test/
+fabric/deploy.pyc
+fabric/deploy2.pyc
