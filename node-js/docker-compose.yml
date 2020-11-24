@@ -1,4 +1,4 @@
-ersion: "2"
+version: "2"
 networks:
   dev-net:
     driver: bridge
@@ -16,3 +16,4 @@ services:
       dev-net:
         ipv4_address: 10.10.10.2
     container_name: "redis"
+
