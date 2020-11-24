@@ -26,3 +26,7 @@ client.del(req.params.key, redis.print);});
 app.listen(port, function(){
   console.log(`Example listening at http://192.168.56.101:${port}`)
 })
+
+
+
+
