@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "config": "^3.3.2",
     "express": "^4.17.1",
     "redis": "^3.0.2"
   },
@@ -7,8 +8,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js",
-    "stop": "pm2 stop index.js",
+    "start": "pm2 start /opt/gitalb_jenkins_lab/dockerfile/ecosystem.config.js",
+    "stop": "pm2 stop /opt/gitalb_jenkins_lab/dockerfile/ecosystem.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,5 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
   "description": ""
 }

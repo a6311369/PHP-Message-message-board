@@ -7,7 +7,9 @@ networks:
         - subnet: 10.10.10.0/24
 services:
   nodejs-service:
-    image: tuffylin/node-service:v4
+    build:
+      context: ../
+      dockerfile: dockerfile/Dockerfile
     privileged: true
     ports:
       - 8888:8888
