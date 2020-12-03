@@ -5,6 +5,6 @@ steps:
 - name: 'gcr.io/kaniko-project/executor:latest'
   args:
   - --destination=gcr.io/$PROJECT_ID/image
-  - --DockerfilePath=dockerfile/Dockerfile
+  - --dockerfile=dockerfile/Dockerfile
   - --cache=true
   - --cache-ttl=1h

@@ -1,0 +1,29 @@
+version: "2"
+networks:
+  dev-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.10.0/24
+services:
+  nodejs-service:
+    build:
+      context: ../
+      dockerfile: dockerfile/Dockerfile
+    privileged: true
+    ports:
+      - 8888:8888
+    networks:
+      dev-net:
+        ipv4_address: 10.10.10.2
+    container_name: "nodejs-service"
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      dev-net:
+        ipv4_address: 10.10.10.3
+    container_name: "redis"
+
+
