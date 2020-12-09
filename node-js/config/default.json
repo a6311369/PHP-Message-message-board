@@ -1,7 +1,7 @@
 {
   "redis": {
     "redisConfig": {
-      "host": "172.16.1.2",
+      "host": "172.16.1.4",
       "port": 6379
     }
   }

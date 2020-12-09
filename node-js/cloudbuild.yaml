@@ -7,4 +7,24 @@ steps:
   - --destination=gcr.io/$PROJECT_ID/image
   - --dockerfile=dockerfile/Dockerfile
   - --cache=true
-  - --cache-ttl=1h
+  - --cache-ttl=336h
+
+- name: 'gcr.io/$PROJECT_ID/kustomize'
+  args:
+  - 'edit'
+  - 'set'
+  - 'image'
+  - 'gcr.io/hale-tracer-296509/image:latest=nodejs-srv:v1'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=lab01'
+    - 'GCLOUD_PROJECT=hale-tracer-296509'
+
+- name: 'gcr.io/$PROJECT_ID/kustomize'
+  args:
+  - 'build'
+  - 'k8s/base'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=lab01'
+    - 'GCLOUD_PROJECT=hale-tracer-296509'
