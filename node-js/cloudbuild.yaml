@@ -2,6 +2,7 @@ steps:
 - name: node
   entrypoint: npm
   args: ['install']
+
 - name: 'gcr.io/kaniko-project/executor:latest'
   args:
   - --destination=gcr.io/$PROJECT_ID/image
@@ -14,7 +15,7 @@ steps:
   - 'edit'
   - 'set'
   - 'image'
-  - 'gcr.io/hale-tracer-296509/image:latest=nodejs-srv:v1'
+  - 'gcr.io/$PROJECT_ID/image:latest=nodejs-srv:v1'
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=lab01'
@@ -25,6 +26,7 @@ steps:
   - 'build'
   - 'k8s/base'
   env:
+    - 'APPLY=true'
     - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=lab01'
     - 'GCLOUD_PROJECT=hale-tracer-296509'
