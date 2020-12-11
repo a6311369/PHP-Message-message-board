@@ -3,9 +3,9 @@ steps:
   entrypoint: npm
   args: ['install']
 
-- name: 'gcr.io/kaniko-project/executor:latest'
+- name: 'gcr.io/kaniko-project/executor'
   args:
-    - --destination=gcr.io/${_PROJECT_ID}/image
+    - --destination=gcr.io/hale-tracer-296509/image:$SHORT_SHA
     - --dockerfile=dockerfile/Dockerfile
     - --cache=true
     - --cache-ttl=336h
@@ -16,7 +16,7 @@ steps:
     - 'edit'
     - 'set'
     - 'image'
-    - 'gcr.io/hale-tracer-296509/image:latest=gcr.io/${_PROJECT_ID}/node-service:$SHORT_SHA'
+    - 'gcr.io/hale-tracer-296509/image:latest=gcr.io/hale-tracer-296509/image:$SHORT_SHA'
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=lab01'

@@ -6,8 +6,8 @@ metadata:
   name: lab01-service
 spec:
   ports:
+  - protocol: TCP
     port: 80
-    protocol: TCP
     targetPort: 8888
   selector:
     app: lab01
