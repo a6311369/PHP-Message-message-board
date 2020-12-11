@@ -5,26 +5,27 @@ steps:
 
 - name: 'gcr.io/kaniko-project/executor:latest'
   args:
-  - --destination=gcr.io/$PROJECT_ID/image
-  - --dockerfile=dockerfile/Dockerfile
-  - --cache=true
-  - --cache-ttl=336h
+    - --destination=gcr.io/${_PROJECT_ID}/image
+    - --dockerfile=dockerfile/Dockerfile
+    - --cache=true
+    - --cache-ttl=336h
 
-- name: 'gcr.io/$PROJECT_ID/kustomize'
+- name: 'gcr.io/hale-tracer-296509/kustomize'
+  dir: 'k8s/base/'
   args:
-  - 'edit'
-  - 'set'
-  - 'image'
-  - 'gcr.io/$PROJECT_ID/image:latest=nodejs-srv:v1'
+    - 'edit'
+    - 'set'
+    - 'image'
+    - 'gcr.io/hale-tracer-296509/image:latest=gcr.io/${_PROJECT_ID}/node-service:$SHORT_SHA'
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=lab01'
     - 'GCLOUD_PROJECT=hale-tracer-296509'
 
-- name: 'gcr.io/$PROJECT_ID/kustomize'
+- name: 'gcr.io/hale-tracer-296509/kustomize'
   args:
-  - 'build'
-  - 'k8s/base'
+    - 'build'
+    - 'k8s/base'
   env:
     - 'APPLY=true'
     - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
